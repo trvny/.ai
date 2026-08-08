@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -25,6 +26,11 @@ def parse_args() -> argparse.Namespace:
         help="Base profile followed by zero or more overlays; later values win",
     )
     parser.add_argument("--output", type=Path, help="Write merged YAML to this file")
+    parser.add_argument(
+        "--schema",
+        type=Path,
+        help="Validate the merged profile against this JSON Schema",
+    )
     return parser.parse_args()
 
 
@@ -59,20 +65,24 @@ def merge_profiles(paths: list[Path]) -> dict[str, Any]:
     return merged
 
 
-def validate_complete_profile(profile: dict[str, Any]) -> None:
-    required = ("schemaVersion", "id", "locale", "personality", "collaboration")
-    missing = [key for key in required if key not in profile]
-    if missing:
+def validate_profile(profile: dict[str, Any], schema_path: Path) -> None:
+    try:
+        import jsonschema
+    except ImportError as exc:  # pragma: no cover
         raise SystemExit(
-            "Merged profile is incomplete; missing: " + ", ".join(missing)
-        )
+            "jsonschema is required for --schema. Install it with: "
+            "python -m pip install jsonschema"
+        ) from exc
 
-    if profile.get("schemaVersion") != "0.2":
-        raise SystemExit("Merged profile must use schemaVersion 0.2")
+    if not schema_path.is_file():
+        raise SystemExit(f"Schema not found: {schema_path}")
 
-    for key in ("personality", "collaboration"):
-        if not isinstance(profile.get(key), dict):
-            raise SystemExit(f"Merged profile field `{key}` must be a mapping")
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    try:
+        jsonschema.validate(profile, schema)
+    except jsonschema.ValidationError as exc:
+        location = ".".join(str(part) for part in exc.absolute_path) or "<root>"
+        raise SystemExit(f"Profile validation failed at {location}: {exc.message}") from exc
 
 
 def dump_profile(profile: dict[str, Any]) -> str:
@@ -87,7 +97,8 @@ def dump_profile(profile: dict[str, Any]) -> str:
 def main() -> None:
     args = parse_args()
     profile = merge_profiles(args.profiles)
-    validate_complete_profile(profile)
+    if args.schema:
+        validate_profile(profile, args.schema)
     output = dump_profile(profile)
 
     if args.output:
