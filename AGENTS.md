@@ -17,6 +17,9 @@ Keep it generic, inspectable, and safe to consume from private downstream overla
 - `examples/` contains deliberately incomplete overlays and usage examples.
 - `schema/` describes complete profile documents, not partial overlays.
 - `tools/` contains small deterministic helpers.
+- `instructions/` contains portable ready-to-adapt instruction blocks.
+- `styles/` documents the portable style vocabulary and guidance.
+- `templates/` contains deliberately small project starters.
 - `skills/` contains intentionally published opt-in skill bundles.
 - `.claude/` and `.codex/` are reference provider defaults. They are not automatically active in repositories that include this project as a submodule.
 
