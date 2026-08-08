@@ -23,6 +23,7 @@ jobs:
       - name: Check files and overlay behavior
         run: |
           python -m compileall -q tools
+          python -m py_compile templates/openai-agent.py
           python tools/merge_profile.py \
             profiles/default.yaml \
             examples/profile.overlay.yaml \
