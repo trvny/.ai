@@ -6,8 +6,7 @@
 
 [![validate](https://img.shields.io/github/actions/workflow/status/trvny/.ai/validate.yml?branch=main&label=validate&logo=githubactions&logoColor=white&style=flat-square)](https://github.com/trvny/.ai/actions/workflows/validate.yml)
 [![license](https://img.shields.io/github/license/trvny/.ai?label=license&logo=opensourceinitiative&logoColor=white&color=6f42c1&style=flat-square)](LICENSE)
-[![last commit](https://img.shields.io/github/last-commit/trvny/.ai?logo=git&logoColor=white&style=flat-square)](https://github.com/trvny/.ai/commits/main)
-[![stars](https://img.shields.io/github/stars/trvny/.ai?style=flat-square&logo=github)](https://github.com/trvny/.ai/stargazers)
+<a href="https://deepwiki.com/trvny/.ai"><img src="https://deepwiki.com/badge.svg" alt="DeepWiki"></a>
 
 [**Submodule guide**](docs/submodule.md) · [**Example overlay**](examples/profile.overlay.yaml) · [**Schema**](schema/style-profile.schema.json)
 
