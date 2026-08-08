@@ -39,6 +39,7 @@ A clean way to consume the public core from another repository is a Git submodul
 git submodule add https://github.com/trvny/.ai.git .ai/core
 mkdir -p .ai/generated
 cp .ai/core/examples/profile.overlay.yaml .ai/profile.yaml
+python -m pip install pyyaml jsonschema
 ```
 
 Keep `.ai/core` untouched. Put private values next to it:
@@ -52,16 +53,17 @@ consumer-repo/
     └── generated/         optional composed output
 ```
 
-Merge the public profile with one or more overlays:
+Merge and validate the public profile with one or more overlays:
 
 ```bash
 python .ai/core/tools/merge_profile.py \
   .ai/core/profiles/default.yaml \
   .ai/profile.yaml \
+  --schema .ai/core/schema/style-profile.schema.json \
   --output .ai/generated/profile.yaml
 ```
 
-Mappings are merged recursively. Scalars and lists from later files replace earlier values. An overlay can therefore contain only the fields it actually changes.
+Mappings are merged recursively. Scalars and lists from later files replace earlier values. An overlay can therefore contain only the fields it actually changes. The schema applies to the final composed profile, not to each partial overlay by itself.
 
 Example:
 
