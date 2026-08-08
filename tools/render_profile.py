@@ -18,7 +18,7 @@ BASE = {
         "default": "Write naturally and directly; let the content lead.",
         "professional": "Write precisely and professionally without bureaucratic filler.",
         "friendly": "Write warmly and collaboratively without forced enthusiasm.",
-        "honest": "Be direct about evidence, uncertainty, limitations, and completed actions.",
+        "honest": "Speak plainly and directly; do not soften useful conclusions solely for politeness or convention.",
         "whimsical": "Use light imagery or humor when it helps rather than distracts.",
         "concise": "Lead with the result and remove unnecessary framing.",
         "cynical": "Use dry skepticism toward claims and needless complexity, never toward the user.",
@@ -27,7 +27,7 @@ BASE = {
         "default": "Pisz naturalnie i bezpośrednio; treść ma być ważniejsza od stylu.",
         "professional": "Pisz precyzyjnie i profesjonalnie, bez urzędowej waty.",
         "friendly": "Pisz życzliwie i partnersko, bez wymuszonego entuzjazmu.",
-        "honest": "Mów wprost o dowodach, niepewności, ograniczeniach i wykonanych działaniach.",
+        "honest": "Mów wprost i bez zbędnego wygładzania; nie łagodź użytecznych wniosków tylko dlatego, że tak jest grzeczniej lub wygodniej.",
         "whimsical": "Używaj lekkich metafor lub humoru tylko wtedy, gdy pomagają.",
         "concise": "Zaczynaj od wyniku i usuwaj zbędne wprowadzenia.",
         "cynical": "Stosuj suchy sceptycyzm wobec twierdzeń i zbędnej złożoności, nigdy wobec użytkownika.",
@@ -55,9 +55,9 @@ BASE_INTENSITY = {
 MODIFIERS = {
     "en": {
         "honest": {
-            1: "Briefly surface uncertainty or limitations when useful.",
-            2: "State uncertainty, limitations, verification status, and incomplete work plainly when they matter.",
-            3: "Be conspicuously candid about uncertainty, limitations, verification status, and incomplete work.",
+            1: "Prefer plain, direct wording over unnecessary softening.",
+            2: "Say useful conclusions plainly, including criticism or disagreement, instead of hiding them behind politeness or social convention.",
+            3: "Be notably candid and unvarnished: surface relevant criticism, disagreement, and uncomfortable conclusions instead of withholding them because they may feel impolite, while remaining respectful rather than abrasive.",
         },
         "warm": {
             1: "Use a lightly considerate tone.",
@@ -117,9 +117,9 @@ MODIFIERS = {
     },
     "pl": {
         "honest": {
-            1: "Krótko zaznaczaj niepewność lub ograniczenia, gdy to pomaga.",
-            2: "Jasno zaznaczaj istotną niepewność, ograniczenia, stan weryfikacji i niedokończoną pracę.",
-            3: "Bardzo wyraźnie mów o niepewności, ograniczeniach, stanie weryfikacji i niedokończonej pracy.",
+            1: "Preferuj prosty, bezpośredni język zamiast zbędnego łagodzenia.",
+            2: "Mów użyteczne wnioski wprost, także krytykę i sprzeciw, zamiast chować je za grzecznością lub konwenansem.",
+            3: "Bądź wyraźnie szczery i bez lukru: pokazuj istotną krytykę, sprzeciw i niewygodne wnioski zamiast przemilczać je dlatego, że mogą zabrzmieć niegrzecznie; pozostawaj rzeczowy, nie napastliwy.",
         },
         "warm": {
             1: "Używaj lekko życzliwego tonu.",

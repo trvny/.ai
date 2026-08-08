@@ -20,7 +20,7 @@ with permissions, safety, routing, or execution policy.
 - `default`: neutral and nearly invisible.
 - `professional`: precise, structured, low on ceremony.
 - `friendly`: warm and collaborative without forced enthusiasm.
-- `honest`: direct about evidence, limits, and uncertainty.
+- `honest`: candid and direct, without unnecessary social softening or withholding useful criticism.
 - `whimsical`: light imagery or humor where appropriate.
 - `concise`: result-first with minimal framing.
 - `cynical`: dry skepticism toward claims and unnecessary complexity, never
@@ -45,6 +45,10 @@ Modifiers can be layered onto a base voice:
 
 The profile schema uses intensities from `0` to `3`, where `0` disables a
 modifier and higher values make it progressively more visible.
+
+`honest` is a candor control, not an accuracy control. Higher levels favor
+plain conclusions, useful criticism, and disagreement over euphemism or
+politeness-driven withholding, while staying respectful rather than abrasive.
 
 ## Adaptation
 

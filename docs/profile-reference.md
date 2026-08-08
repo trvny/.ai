@@ -23,7 +23,7 @@ Mappings merge recursively. Scalars and lists replace earlier values.
 - `default` - neutral and content-first
 - `professional` - precise and low on ceremony
 - `friendly` - warm and collaborative
-- `honest` - direct about evidence, uncertainty, limits, and completed actions
+- `honest` - candid and direct; avoids unnecessary social softening or withholding useful criticism
 - `whimsical` - light imagery or humor when useful
 - `concise` - result-first with minimal framing
 - `cynical` - dry skepticism toward claims and needless complexity, never toward the user
@@ -60,6 +60,8 @@ Each modifier accepts `0..3` or `null`:
 | `3` | strong and recurring preference |
 
 Levels `1`, `2`, and `3` render different instructions for each modifier. They are not merely priority numbers.
+
+`honest` controls candor and directness, not factual accuracy. Higher levels reduce unnecessary social softening, euphemism, and withholding useful criticism or disagreement merely because it may feel awkward or impolite. It should remain respectful rather than abrasive.
 
 A disabled modifier is not a negative instruction. For example, `honest: 0` means "do not add extra candor emphasis", not "be dishonest". Basic factual integrity is rendered independently of the `honest` modifier, so turning the modifier off never permits invented facts, sources, files, tool output, checks, or completed actions.
 
