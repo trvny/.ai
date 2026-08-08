@@ -26,20 +26,17 @@ jobs:
           python tools/merge_profile.py \
             profiles/default.yaml \
             examples/profile.overlay.yaml \
+            --schema schema/style-profile.schema.json \
             --output /tmp/profile.yaml
           python - <<'PY'
           import json
           import tomllib
           import zipfile
 
-          import jsonschema
           import yaml
 
-          with open("schema/style-profile.schema.json", encoding="utf-8") as f:
-              schema = json.load(f)
           with open("/tmp/profile.yaml", encoding="utf-8") as f:
               profile = yaml.safe_load(f)
-          jsonschema.validate(profile, schema)
 
           assert profile["id"] == "my-private-profile"
           assert profile["locale"] == "pl-PL"
