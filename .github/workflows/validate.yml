@@ -29,6 +29,13 @@ jobs:
             examples/profile.overlay.yaml \
             --schema schema/style-profile.schema.json \
             --output /tmp/profile.yaml
+          python tools/render_profile.py \
+            profiles/default.yaml \
+            examples/profile.overlay.yaml \
+            --schema schema/style-profile.schema.json \
+            --output /tmp/instructions.txt
+          grep -q "Odpowiadaj w języku użytkownika" /tmp/instructions.txt
+          grep -q "Najpierw podaj odpowiedź" /tmp/instructions.txt
           python - <<'PY'
           import json
           import tomllib
