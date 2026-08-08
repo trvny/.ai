@@ -1,72 +1,69 @@
-# .ai
+<div align="center">
 
-Portable building blocks for AI-assisted projects: communication profiles, private overlays, instruction and style libraries, conservative provider defaults, reusable skills, and small tools that keep configuration understandable.
+# `.ai`
 
-The repository is intentionally a **public core**, not a personal configuration dump. Project-specific preferences, identities, credentials, paths, and workflow rules belong in downstream private overlays.
+**Portable AI core for profiles, overlays, provider adapters, reusable instructions and skills.**
 
-## Why this exists
+[![validate](https://img.shields.io/github/actions/workflow/status/trvny/.ai/validate.yml?branch=main&label=validate&logo=githubactions&logoColor=white&style=flat-square)](https://github.com/trvny/.ai/actions/workflows/validate.yml)
+[![license](https://img.shields.io/github/license/trvny/.ai?style=flat-square)](LICENSE)
+[![last commit](https://img.shields.io/github/last-commit/trvny/.ai?logo=git&logoColor=white&style=flat-square)](https://github.com/trvny/.ai/commits/main)
+[![stars](https://img.shields.io/github/stars/trvny/.ai?style=flat-square&logo=github)](https://github.com/trvny/.ai/stargazers)
 
-AI configuration tends to drift into copied prompts, provider-specific files, and slightly different versions of the same rule. `.ai` keeps the reusable layer in one place and makes private customization explicit.
+[**Submodule guide**](docs/submodule.md) · [**Example overlay**](examples/profile.overlay.yaml) · [**Schema**](schema/style-profile.schema.json)
 
-The basic model is simple:
+</div>
 
-```text
-public core + private overlay -> effective local configuration
+---
+
+## Public core, private overlay
+
+`.ai` keeps reusable AI configuration in one public place while downstream repositories keep their own private or project-specific differences.
+
+```mermaid
+flowchart LR
+    C[Public .ai core] --> M[Compose]
+    O[Private overlay] --> M
+    M --> E[Effective profile / instructions]
 ```
 
-Later layers win. No reverse synchronization is needed.
+Later layers win. Reusable changes go upstream; local differences stay downstream. No reverse synchronization is needed.
 
 ## Layout
 
 ```text
 .ai/
-├── profiles/              portable base profiles
-├── examples/              small overlay examples
-├── schema/                profile schema
-├── tools/                 merge and rendering helpers
-├── instructions/          paste-ready portable instructions
-├── styles/                style vocabulary and guidance
-├── templates/             small project starting points
-├── skills/                reusable opt-in skills
-├── .claude/               conservative Claude Code reference defaults
-└── .codex/                conservative Codex reference defaults
+├── profiles/      base profiles
+├── examples/      overlay examples
+├── schema/        profile schema
+├── tools/         composition helpers
+├── instructions/  reusable instructions
+├── styles/        style guidance
+├── templates/     project starters
+├── skills/        portable opt-in skills
+├── .claude/       Claude reference defaults
+└── .codex/        Codex reference defaults
 ```
 
-Files in this repository do not magically become provider instructions just because they exist. Treat them as inputs or templates and wire them into the provider or project that should use them.
+Files here are building blocks. Providers do not automatically discover or apply everything in the repository.
 
-## Install as a submodule
+## Use it in another repository
 
-For most repositories, the cleanest setup is to pin this public core as `.ai/core` and keep only your own overlay beside it:
+The usual setup is a pinned submodule plus a local overlay:
 
 ```bash
 git submodule add https://github.com/trvny/.ai.git .ai/core
-mkdir -p .ai/generated
 cp .ai/core/examples/profile.overlay.yaml .ai/profile.yaml
-python -m pip install pyyaml jsonschema
 ```
 
-After cloning a repository that already uses the submodule:
+For repositories that already use it:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-The full walkthrough covers cloning, overlays, rendering, updates, CI checkout and what belongs upstream vs. downstream:
+See **[docs/submodule.md](docs/submodule.md)** for cloning, profile composition, rendering, updates and CI checkout.
 
-**[Submodule setup guide →](docs/submodule.md)**
-
-Keep `.ai/core` untouched. Put private values next to it:
-
-```text
-consumer-repo/
-└── .ai/
-    ├── core/              git submodule -> trvny/.ai
-    ├── profile.yaml       private partial overlay
-    ├── private/           other local-only material
-    └── generated/         optional composed output
-```
-
-### Compose the effective profile
+## Composition
 
 ```bash
 python .ai/core/tools/merge_profile.py \
@@ -76,84 +73,28 @@ python .ai/core/tools/merge_profile.py \
   --output .ai/generated/profile.yaml
 ```
 
-Mappings are merged recursively. Scalars and lists from later files replace earlier values. An overlay can therefore contain only the fields it actually changes. The schema applies to the final composed profile, not to each partial overlay by itself.
+The final composed profile is validated against the schema. Partial overlays only need to contain the values they change.
 
-### Render ready-to-use instructions
-
-The renderer accepts the same ordered profile stack, so a consumer does not need a duplicated helper:
-
-```bash
-python .ai/core/tools/render_profile.py \
-  .ai/core/profiles/default.yaml \
-  .ai/profile.yaml \
-  --schema .ai/core/schema/style-profile.schema.json \
-  --output .ai/generated/instructions.txt
-```
-
-Language defaults to the composed profile's locale and can be overridden with `--language en` or `--language pl`.
-
-Example overlay:
-
-```yaml
-id: my-private-profile
-locale: pl-PL
-personality:
-  modifiers:
-    concise: 2
-    warm: 2
-```
-
-The rest still comes from the public base profile.
-
-### Updating the core
-
-```bash
-git -C .ai/core fetch origin
-git -C .ai/core checkout main
-git -C .ai/core pull --ff-only
-git add .ai/core
-```
-
-The direction stays obvious:
-
-- reusable change -> this public repository
-- personal or project-specific change -> the downstream overlay
-
-## Portable library
-
-`instructions/instructions.md` provides compact ready-to-adapt instruction blocks. `styles/styles.md` documents the portable style vocabulary used by the profile schema. `templates/` contains deliberately small starters rather than a full application framework.
-
-## Provider defaults
-
-`.claude/settings.json` and `.codex/config.toml` are conservative reference defaults. They intentionally avoid credentials, personal paths, model preferences, and project identities.
-
-If a provider expects configuration at the consumer repository root, copy or adapt the relevant file there. A config nested inside a submodule is not automatically discovered by the provider.
-
-## Skills
-
-`skills/` contains portable opt-in bundles that are useful outside any single project. The initial bundle is `english-polish.skill`, focused on natural English <-> Polish translation and localization.
-
-Project-specific and archival skills should stay in downstream private storage until they are intentionally cleaned up for public use.
+Provider-specific files remain reference defaults. Adapt or expose them where the consuming tool expects them rather than duplicating the whole core.
 
 ## Security boundary
 
-Public files must not contain:
-
-- API keys, tokens, cookies, private endpoints, or secret values
-- personal filesystem paths or machine-specific configuration
-- private repository details that are not intentionally documented
-- personal behavioral profiles presented as generic defaults
-
-Secrets belong in environment variables, provider secret storage, or ignored local files.
+Keep credentials, tokens, personal paths, private endpoints and machine-specific configuration out of the public core. Use environment variables, secret storage or ignored local files instead.
 
 ## Design rules
 
 - one maintained source of truth per concern
-- public core, private overlays
-- provider adapters stay thin
-- generated output stays separate from maintained input
+- public core, downstream overlays
+- thin provider adapters
+- generated output separate from maintained input
 - simple files before frameworks
 - explicit behavior before hidden magic
+
+## License
+
+[ISC](LICENSE). Use, fork and reshape it while keeping the copyright and license notice.
+
+---
 
 ## 📰 Mininews
 
@@ -173,7 +114,3 @@ Secrets belong in environment variables, provider secret storage, or ignored loc
 <i>❝Conquer anger with non-anger. Conquer badness with goodness. Conquer meanness with generosity. Conquer dishonesty with truth. — Buddha❞</i>
 <!--ENDS_HERE_QUOTE_README-->
 <!-- markdownlint-enable MD033 -->
-
-## License
-
-ISC. Use it, fork it, reshape it, and keep the copyright and license notice.
