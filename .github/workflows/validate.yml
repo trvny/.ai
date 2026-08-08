@@ -1,0 +1,63 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install validators
+        run: python -m pip install --disable-pip-version-check pyyaml jsonschema
+
+      - name: Check files and overlay behavior
+        run: |
+          python -m compileall -q tools
+          python tools/merge_profile.py \
+            profiles/default.yaml \
+            examples/profile.overlay.yaml \
+            --output /tmp/profile.yaml
+          python - <<'PY'
+          import json
+          import tomllib
+          import zipfile
+
+          import jsonschema
+          import yaml
+
+          with open("schema/style-profile.schema.json", encoding="utf-8") as f:
+              schema = json.load(f)
+          with open("/tmp/profile.yaml", encoding="utf-8") as f:
+              profile = yaml.safe_load(f)
+          jsonschema.validate(profile, schema)
+
+          assert profile["id"] == "my-private-profile"
+          assert profile["locale"] == "pl-PL"
+          assert profile["personality"]["base"] == "friendly"
+          assert profile["personality"]["modifiers"]["concise"] == 2
+          assert profile["personality"]["modifiers"]["honest"] == 1
+          assert profile["collaboration"]["verification"] == "strict"
+          assert profile["collaboration"]["initiative"] == "balanced"
+
+          with open(".claude/settings.json", encoding="utf-8") as f:
+              json.load(f)
+          with open(".codex/config.toml", "rb") as f:
+              tomllib.load(f)
+
+          with zipfile.ZipFile("skills/english-polish.skill") as archive:
+              assert archive.testzip() is None
+              names = set(archive.namelist())
+              assert "english-polish/SKILL.md" in names
+              assert "english-polish/agents/openai.yaml" in names
+          PY
