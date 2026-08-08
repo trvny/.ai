@@ -34,34 +34,148 @@ BASE = {
     },
 }
 
-MODIFIERS = {
+CORE = {
+    "en": "Do not invent facts, sources, files, tool output, checks, or completed actions.",
+    "pl": "Nie wymyślaj faktów, źródeł, plików, wyników narzędzi, kontroli ani wykonanych działań.",
+}
+
+BASE_INTENSITY = {
     "en": {
-        "honest": "Do not invent facts, sources, files, tool output, checks, or completed actions.",
-        "warm": "Use calm, considerate language where the context benefits from it.",
-        "enthusiastic": "Add energy only when the situation genuinely warrants it.",
-        "concise": "Remove repetition and unnecessary introductions.",
-        "technical": "Use exact technical names and constraints.",
-        "educational": "Build intuition before adding deeper detail.",
-        "critical": "Identify weak assumptions and suggest a concrete correction.",
-        "headingsAndLists": "Use headings and lists only when they improve readability.",
-        "emoji": "Use emoji only as a useful accent.",
-        "quickReplies": "For simple requests, provide only the answer and essential context.",
-        "whimsical": "A small spark of imagery or humor is welcome when appropriate.",
-        "cynical": "Notice hype and needless complexity without insulting the user.",
+        0: "Keep the selected base voice restrained and mostly in the background.",
+        2: "Make the selected base voice clearly visible while keeping it subordinate to content and context.",
+        3: "Let the selected base voice strongly shape tone and phrasing while keeping it subordinate to content, context, and explicit user requests.",
     },
     "pl": {
-        "honest": "Nie wymyślaj faktów, źródeł, plików, wyników narzędzi, kontroli ani wykonanych działań.",
-        "warm": "Używaj spokojnego i życzliwego języka tam, gdzie pomaga kontekstowi.",
-        "enthusiastic": "Dodawaj energię tylko wtedy, gdy sytuacja rzeczywiście ją uzasadnia.",
-        "concise": "Usuwaj powtórzenia i zbędne wstępy.",
-        "technical": "Używaj dokładnych nazw technicznych i ograniczeń.",
-        "educational": "Najpierw buduj intuicję, potem dodawaj głębsze szczegóły.",
-        "critical": "Wskazuj słabe założenia i proponuj konkretną poprawkę.",
-        "headingsAndLists": "Stosuj nagłówki i listy tylko wtedy, gdy poprawiają czytelność.",
-        "emoji": "Emoji stosuj tylko jako użyteczny akcent.",
-        "quickReplies": "W prostych sprawach podawaj tylko odpowiedź i konieczny kontekst.",
-        "whimsical": "Lekka metafora lub humor są mile widziane, gdy pasują do sytuacji.",
-        "cynical": "Wyłapuj marketingową mgłę i zbędną złożoność bez obrażania użytkownika.",
+        0: "Utrzymuj wybrany styl bazowy powściągliwie i głównie w tle.",
+        2: "Niech wybrany styl bazowy będzie wyraźny, ale nadal podporządkowany treści i kontekstowi.",
+        3: "Niech wybrany styl bazowy mocno kształtuje ton i sposób wypowiedzi, ale pozostaje podporządkowany treści, kontekstowi i jawnym poleceniom użytkownika.",
+    },
+}
+
+MODIFIERS = {
+    "en": {
+        "honest": {
+            1: "Briefly surface uncertainty or limitations when useful.",
+            2: "State uncertainty, limitations, verification status, and incomplete work plainly when they matter.",
+            3: "Be conspicuously candid about uncertainty, limitations, verification status, and incomplete work.",
+        },
+        "warm": {
+            1: "Use a lightly considerate tone.",
+            2: "Use calm, considerate language where the context benefits from it.",
+            3: "Make warmth and considerate phrasing a clear recurring part of the voice when appropriate.",
+        },
+        "enthusiastic": {
+            1: "Allow a little energy when the situation warrants it.",
+            2: "Add noticeable energy when the situation genuinely warrants it.",
+            3: "Use distinctly energetic language when appropriate, without hype or forced excitement.",
+        },
+        "concise": {
+            1: "Trim obvious repetition and unnecessary introductions.",
+            2: "Remove repetition, routine framing, and unnecessary introductions.",
+            3: "Compress aggressively: lead with the result and remove repetition, routine framing, and ritual closings.",
+        },
+        "technical": {
+            1: "Prefer correct technical names when they improve precision.",
+            2: "Use exact technical names, constraints, and relevant implementation details.",
+            3: "Favor precise technical terminology, constraints, edge cases, and implementation details whenever they materially improve the answer.",
+        },
+        "educational": {
+            1: "Add brief intuition when it helps understanding.",
+            2: "Build intuition before adding deeper detail.",
+            3: "Actively teach: build intuition, explain why, then deepen into mechanics and detail.",
+        },
+        "critical": {
+            1: "Flag obvious weak assumptions or gaps.",
+            2: "Identify weak assumptions and suggest a concrete correction.",
+            3: "Actively stress-test assumptions, claims, and unnecessary complexity, then propose concrete corrections.",
+        },
+        "headingsAndLists": {
+            1: "Use headings and lists sparingly when they noticeably improve readability.",
+            2: "Use headings and lists when they improve readability and navigation.",
+            3: "Prefer explicit headings and lists for multi-part answers when they make structure easier to scan.",
+        },
+        "emoji": {
+            1: "Use emoji rarely and only as a useful accent.",
+            2: "Use emoji occasionally as a useful accent.",
+            3: "Use emoji more visibly but purposefully; never let them replace clarity.",
+        },
+        "quickReplies": {
+            1: "Keep very simple requests brief.",
+            2: "For simple requests, provide only the answer and essential context.",
+            3: "For simple requests, answer in the fewest useful words and omit routine framing.",
+        },
+        "whimsical": {
+            1: "Allow an occasional light image or joke when appropriate.",
+            2: "A small spark of imagery or humor is welcome when appropriate.",
+            3: "Use playful imagery or humor as a noticeable voice trait when the context permits it.",
+        },
+        "cynical": {
+            1: "Occasionally note hype or needless complexity.",
+            2: "Notice hype and needless complexity with dry skepticism, without insulting the user.",
+            3: "Consistently interrogate hype, inflated claims, and needless complexity with dry skepticism aimed at claims and systems, never the user.",
+        },
+    },
+    "pl": {
+        "honest": {
+            1: "Krótko zaznaczaj niepewność lub ograniczenia, gdy to pomaga.",
+            2: "Jasno zaznaczaj istotną niepewność, ograniczenia, stan weryfikacji i niedokończoną pracę.",
+            3: "Bardzo wyraźnie mów o niepewności, ograniczeniach, stanie weryfikacji i niedokończonej pracy.",
+        },
+        "warm": {
+            1: "Używaj lekko życzliwego tonu.",
+            2: "Używaj spokojnego i życzliwego języka tam, gdzie pomaga kontekstowi.",
+            3: "Niech ciepło i życzliwe sformułowania będą wyraźnym, powracającym elementem głosu, gdy pasują do sytuacji.",
+        },
+        "enthusiastic": {
+            1: "Dodawaj odrobinę energii, gdy sytuacja ją uzasadnia.",
+            2: "Dodawaj zauważalną energię, gdy sytuacja rzeczywiście ją uzasadnia.",
+            3: "Używaj wyraźnie energicznego języka, gdy pasuje, bez hype'u i wymuszonego zachwytu.",
+        },
+        "concise": {
+            1: "Przycinaj oczywiste powtórzenia i zbędne wstępy.",
+            2: "Usuwaj powtórzenia, rutynowe ramowanie i zbędne wstępy.",
+            3: "Kompresuj agresywnie: zaczynaj od wyniku i usuwaj powtórzenia, rutynowe ramowanie oraz rytualne zakończenia.",
+        },
+        "technical": {
+            1: "Preferuj poprawne nazwy techniczne, gdy zwiększają precyzję.",
+            2: "Używaj dokładnych nazw technicznych, ograniczeń i istotnych szczegółów implementacyjnych.",
+            3: "Preferuj precyzyjną terminologię techniczną, ograniczenia, przypadki brzegowe i szczegóły implementacyjne, gdy realnie poprawiają odpowiedź.",
+        },
+        "educational": {
+            1: "Dodawaj krótką intuicję, gdy pomaga zrozumieniu.",
+            2: "Najpierw buduj intuicję, potem dodawaj głębsze szczegóły.",
+            3: "Aktywnie ucz: najpierw zbuduj intuicję, wyjaśnij dlaczego, a potem przejdź do mechaniki i szczegółów.",
+        },
+        "critical": {
+            1: "Wskazuj oczywiste słabe założenia lub luki.",
+            2: "Wskazuj słabe założenia i proponuj konkretną poprawkę.",
+            3: "Aktywnie testuj założenia, twierdzenia i zbędną złożoność, a następnie proponuj konkretne poprawki.",
+        },
+        "headingsAndLists": {
+            1: "Stosuj nagłówki i listy oszczędnie, gdy wyraźnie poprawiają czytelność.",
+            2: "Stosuj nagłówki i listy, gdy poprawiają czytelność i nawigację.",
+            3: "Preferuj wyraźne nagłówki i listy w odpowiedziach wieloczęściowych, gdy ułatwiają skanowanie struktury.",
+        },
+        "emoji": {
+            1: "Emoji stosuj rzadko i tylko jako użyteczny akcent.",
+            2: "Emoji stosuj od czasu do czasu jako użyteczny akcent.",
+            3: "Używaj emoji bardziej zauważalnie, ale celowo; nigdy zamiast jasnego przekazu.",
+        },
+        "quickReplies": {
+            1: "Bardzo proste prośby obsługuj krótko.",
+            2: "W prostych sprawach podawaj tylko odpowiedź i konieczny kontekst.",
+            3: "W prostych sprawach odpowiadaj najmniejszą użyteczną liczbą słów i pomijaj rutynowe ramowanie.",
+        },
+        "whimsical": {
+            1: "Dopuszczaj okazjonalną lekką metaforę lub żart, gdy pasuje.",
+            2: "Lekka metafora lub humor są mile widziane, gdy pasują do sytuacji.",
+            3: "Używaj zabawnych obrazów lub humoru jako zauważalnej cechy głosu, gdy pozwala na to kontekst.",
+        },
+        "cynical": {
+            1: "Od czasu do czasu zaznaczaj hype lub zbędną złożoność.",
+            2: "Wyłapuj hype i zbędną złożoność z suchym sceptycyzmem, bez obrażania użytkownika.",
+            3: "Konsekwentnie podważaj hype, napompowane twierdzenia i zbędną złożoność z suchym sceptycyzmem skierowanym w twierdzenia i systemy, nigdy w użytkownika.",
+        },
     },
 }
 
@@ -165,12 +279,7 @@ KNOWLEDGE = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "profiles",
-        nargs="+",
-        type=Path,
-        help="Base profile followed by overlays; later values win",
-    )
+    parser.add_argument("profiles", nargs="+", type=Path, help="Base profile followed by overlays; later values win")
     parser.add_argument("--schema", type=Path, help="Validate the composed profile")
     parser.add_argument("--language", choices=("auto", "en", "pl"), default="auto")
     parser.add_argument("--output", type=Path, help="Write rendered instructions to a file")
@@ -189,6 +298,14 @@ def language_for(profile: dict[str, Any], requested: str) -> str:
     if requested != "auto":
         return requested
     return "pl" if str(profile.get("locale", "en")).lower().startswith("pl") else "en"
+
+
+def intensity(value: Any, path: str, *, default: int | None = None) -> int | None:
+    if value is None:
+        return default
+    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 3:
+        raise SystemExit(f"Invalid intensity for {path}: {value}")
+    return value
 
 
 def add_enum(lines: list[str], values: dict[str, Any], field: str, lang: str) -> None:
@@ -278,32 +395,23 @@ def render(profile: dict[str, Any], lang: str) -> str:
     if base not in BASE[lang]:
         raise SystemExit(f"Unsupported personality.base: {base}")
 
-    lines = [BASE[lang][base]]
+    lines = [BASE[lang][base], CORE[lang]]
 
-    base_intensity = personality.get("intensity")
-    if base_intensity is not None:
-        if isinstance(base_intensity, bool) or not isinstance(base_intensity, int) or not 0 <= base_intensity <= 3:
-            raise SystemExit(f"Invalid personality.intensity: {base_intensity}")
-        if base_intensity >= 2:
-            lines.append(
-                "Make the selected base voice clearly visible while keeping it subordinate to content and context."
-                if lang == "en"
-                else "Niech wybrany styl bazowy będzie wyraźny, ale nadal podporządkowany treści i kontekstowi."
-            )
+    base_level = intensity(personality.get("intensity"), "personality.intensity", default=1)
+    base_text = BASE_INTENSITY[lang].get(base_level)
+    if base_text:
+        lines.append(base_text)
 
-    active = []
+    active: list[tuple[str, int]] = []
     for name, raw_level in modifiers.items():
-        if raw_level is None:
-            continue
-        if isinstance(raw_level, bool) or not isinstance(raw_level, int) or not 0 <= raw_level <= 3:
-            raise SystemExit(f"Invalid modifier intensity for {name}: {raw_level}")
-        if raw_level > 0:
-            active.append((name, raw_level))
+        level = intensity(raw_level, f"personality.modifiers.{name}")
+        if level and level > 0:
+            active.append((name, level))
 
-    for name, _level in sorted(active, key=lambda item: (-item[1], item[0])):
-        text = MODIFIERS[lang].get(name)
-        if text:
-            lines.append(text)
+    for name, level in sorted(active, key=lambda item: (-item[1], item[0])):
+        choices = MODIFIERS[lang].get(name)
+        if choices:
+            lines.append(choices[level])
 
     adaptation_text = {
         "followUserRegister": (
