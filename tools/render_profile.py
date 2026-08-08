@@ -7,7 +7,10 @@ import argparse
 from pathlib import Path
 from typing import Any
 
-from merge_profile import merge_profiles, validate_profile
+try:  # Support both `python tools/render_profile.py` and module imports.
+    from .merge_profile import merge_profiles, validate_profile
+except ImportError:  # pragma: no cover - exercised by direct script execution
+    from merge_profile import merge_profiles, validate_profile
 
 
 BASE = {
@@ -62,7 +65,7 @@ MODIFIERS = {
     },
 }
 
-COLLAB = {
+COLLAB_BOOL = {
     "en": {
         "answerFirst": "Lead with the answer, result, or decision.",
         "plainChatIsDefault": "Plain chat is the default; use agentic machinery only when it adds real value.",
@@ -85,6 +88,80 @@ COLLAB = {
     },
 }
 
+COLLAB_ENUM = {
+    "en": {
+        "preamble": {
+            "off": "Do not announce work before answering.",
+            "multiStepOnly": "Use a brief preamble only before multi-step or state-changing work.",
+            "always": "Briefly state the plan before acting.",
+        },
+        "initiative": {
+            "conservative": "Stay within the requested scope unless another step is necessary to complete it.",
+            "balanced": "Take obvious useful steps independently without broadening scope without reason.",
+            "proactive": "Actively surface related problems and useful improvements while respecting scope.",
+        },
+        "verification": {
+            "light": "Check basic consistency and visible errors.",
+            "normal": "Verify important claims and results in proportion to their risk.",
+            "strict": "Require strong evidence and thorough validation before firm conclusions.",
+        },
+        "questionPolicy": {
+            "blockingOnly": "Ask only when missing information blocks safe or useful progress.",
+            "materialAmbiguity": "Ask when ambiguity could materially change the result.",
+            "earlyAlignment": "For larger tasks, align early on goal, scope, and success criteria.",
+        },
+        "assumptionPolicy": {
+            "cautious": "Avoid assumptions when they may change the outcome; label and confirm them.",
+            "balanced": "Make reasonable reversible assumptions and state material ones clearly.",
+            "decisive": "Make reasonable decisions independently unless the risk is material.",
+        },
+    },
+    "pl": {
+        "preamble": {
+            "off": "Nie zapowiadaj pracy przed odpowiedzią.",
+            "multiStepOnly": "Krótko zapowiadaj plan tylko przed pracą wieloetapową lub zmieniającą stan.",
+            "always": "Przed działaniem krótko zapowiadaj plan.",
+        },
+        "initiative": {
+            "conservative": "Trzymaj się zadanego zakresu, chyba że dodatkowy krok jest konieczny do jego wykonania.",
+            "balanced": "Samodzielnie wykonuj oczywiste użyteczne kroki bez niepotrzebnego poszerzania zakresu.",
+            "proactive": "Aktywnie wychwytuj powiązane problemy i ulepszenia, respektując zakres zadania.",
+        },
+        "verification": {
+            "light": "Sprawdzaj podstawową spójność i widoczne błędy.",
+            "normal": "Weryfikuj ważne twierdzenia i wyniki proporcjonalnie do ryzyka.",
+            "strict": "Wymagaj mocnych dowodów i pełnej walidacji przed stanowczym wnioskiem.",
+        },
+        "questionPolicy": {
+            "blockingOnly": "Pytaj tylko wtedy, gdy brak informacji blokuje bezpieczny lub sensowny postęp.",
+            "materialAmbiguity": "Pytaj, gdy niejasność może istotnie zmienić wynik.",
+            "earlyAlignment": "Przy większych zadaniach wcześnie uzgadniaj cel, zakres i kryteria sukcesu.",
+        },
+        "assumptionPolicy": {
+            "cautious": "Unikaj założeń mogących zmienić wynik; oznaczaj je i potwierdzaj.",
+            "balanced": "Przyjmuj rozsądne odwracalne założenia i jasno zaznaczaj te istotne.",
+            "decisive": "Podejmuj rozsądne decyzje samodzielnie, chyba że ryzyko jest istotne.",
+        },
+    },
+}
+
+KNOWLEDGE = {
+    "en": {
+        "distinguishRawFromSynthesis": "Distinguish raw source material from your synthesis when that distinction matters.",
+        "treatMemoryAsFallible": "Treat remembered context as fallible rather than as authoritative evidence.",
+        "surfaceSourceConflicts": "Surface meaningful conflicts between sources instead of silently choosing one.",
+        "preferMaintainedSynthesisForOrientation": "Prefer maintained synthesis for orientation, then verify important details against primary material.",
+        "requireTraceableClaims": "Keep externally verifiable claims traceable to supporting evidence.",
+    },
+    "pl": {
+        "distinguishRawFromSynthesis": "Odróżniaj surowy materiał źródłowy od własnej syntezy, gdy ma to znaczenie.",
+        "treatMemoryAsFallible": "Traktuj zapamiętany kontekst jako omylny, a nie jako rozstrzygający dowód.",
+        "surfaceSourceConflicts": "Pokazuj istotne konflikty między źródłami zamiast po cichu wybierać jedno.",
+        "preferMaintainedSynthesisForOrientation": "Do orientacji preferuj utrzymywaną syntezę, a ważne szczegóły sprawdzaj w materiale pierwotnym.",
+        "requireTraceableClaims": "Utrzymuj zewnętrznie weryfikowalne twierdzenia w formie możliwej do prześledzenia do dowodów.",
+    },
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -100,23 +177,119 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def mapping(value: Any, path: str) -> dict[str, Any]:
+    if value is None:
+        raise SystemExit(f"Profile section `{path}` must be a mapping, not null")
+    if not isinstance(value, dict):
+        raise SystemExit(f"Profile section `{path}` must be a mapping")
+    return value
+
+
 def language_for(profile: dict[str, Any], requested: str) -> str:
     if requested != "auto":
         return requested
     return "pl" if str(profile.get("locale", "en")).lower().startswith("pl") else "en"
 
 
+def add_enum(lines: list[str], values: dict[str, Any], field: str, lang: str) -> None:
+    value = values.get(field)
+    if value is None:
+        return
+    choices = COLLAB_ENUM[lang][field]
+    if value not in choices:
+        raise SystemExit(f"Unsupported collaboration.{field}: {value}")
+    lines.append(choices[value])
+
+
+def render_output(lines: list[str], output: dict[str, Any], lang: str) -> None:
+    if output.get("preferShortParagraphs") is True:
+        lines.append("Prefer short paragraphs." if lang == "en" else "Preferuj krótkie akapity.")
+
+    table_mode = output.get("tables")
+    if table_mode == "avoid":
+        lines.append("Avoid tables unless required." if lang == "en" else "Unikaj tabel, chyba że są wymagane.")
+    elif table_mode == "prefer":
+        lines.append("Prefer tables when they make comparisons clearer." if lang == "en" else "Preferuj tabele, gdy ułatwiają porównania.")
+    elif table_mode not in (None, "whenUseful"):
+        raise SystemExit(f"Unsupported output.tables: {table_mode}")
+
+    code_mode = output.get("codeExamples")
+    code_text = {
+        "en": {
+            "minimal": "Keep code examples minimal.",
+            "runnable": "Prefer runnable code examples.",
+            "explanatory": "Use explanatory code examples with enough context to understand them.",
+        },
+        "pl": {
+            "minimal": "Przykłady kodu utrzymuj minimalne.",
+            "runnable": "Preferuj uruchamialne przykłady kodu.",
+            "explanatory": "Podawaj objaśniające przykłady kodu z kontekstem potrzebnym do zrozumienia.",
+        },
+    }
+    if code_mode is not None:
+        if code_mode not in code_text[lang]:
+            raise SystemExit(f"Unsupported output.codeExamples: {code_mode}")
+        lines.append(code_text[lang][code_mode])
+
+    citation_mode = output.get("citations")
+    citation_text = {
+        "en": {
+            "platformDefault": "Follow the platform's normal citation behavior.",
+            "whenAvailable": "Use citations when reliable source references are available.",
+            "requiredForExternalFacts": "Support external factual claims with citations.",
+        },
+        "pl": {
+            "platformDefault": "Stosuj standardowe zasady cytowania danej platformy.",
+            "whenAvailable": "Używaj cytowań, gdy dostępne są wiarygodne odniesienia do źródeł.",
+            "requiredForExternalFacts": "Zewnętrzne twierdzenia faktyczne popieraj cytowaniami.",
+        },
+    }
+    if citation_mode is not None:
+        if citation_mode not in citation_text[lang]:
+            raise SystemExit(f"Unsupported output.citations: {citation_mode}")
+        lines.append(citation_text[lang][citation_mode])
+
+    default_format = output.get("defaultFormat")
+    if default_format and default_format != "prose":
+        lines.append(
+            f"Default to {default_format} output when the user does not request another format."
+            if lang == "en"
+            else f"Domyślnie używaj formatu `{default_format}`, jeśli użytkownik nie poprosi o inny."
+        )
+
+    max_depth = output.get("maxHeadingDepth")
+    if max_depth is not None:
+        lines.append(
+            f"Do not exceed heading depth {max_depth}."
+            if lang == "en"
+            else f"Nie przekraczaj {max_depth}. poziomu nagłówków."
+        )
+
+
 def render(profile: dict[str, Any], lang: str) -> str:
-    personality = profile.get("personality", {})
-    collaboration = profile.get("collaboration", {})
-    adaptation = personality.get("adaptation", {})
-    modifiers = personality.get("modifiers", {})
+    personality = mapping(profile.get("personality"), "personality")
+    collaboration = mapping(profile.get("collaboration"), "collaboration")
+    adaptation = mapping(personality.get("adaptation", {}), "personality.adaptation")
+    modifiers = mapping(personality.get("modifiers", {}), "personality.modifiers")
+    knowledge = mapping(profile.get("knowledge", {}), "knowledge")
+    output = mapping(profile.get("output", {}), "output")
 
     base = personality.get("base", "default")
     if base not in BASE[lang]:
         raise SystemExit(f"Unsupported personality.base: {base}")
 
     lines = [BASE[lang][base]]
+
+    base_intensity = personality.get("intensity")
+    if base_intensity is not None:
+        if isinstance(base_intensity, bool) or not isinstance(base_intensity, int) or not 0 <= base_intensity <= 3:
+            raise SystemExit(f"Invalid personality.intensity: {base_intensity}")
+        if base_intensity >= 2:
+            lines.append(
+                "Make the selected base voice clearly visible while keeping it subordinate to content and context."
+                if lang == "en"
+                else "Niech wybrany styl bazowy będzie wyraźny, ale nadal podporządkowany treści i kontekstowi."
+            )
 
     active = []
     for name, raw_level in modifiers.items():
@@ -132,57 +305,45 @@ def render(profile: dict[str, Any], lang: str) -> str:
         if text:
             lines.append(text)
 
-    if adaptation.get("followUserRegister", True):
-        lines.append(
-            "Match the user's register without copying mistakes, hostility, or unsafe behavior."
-            if lang == "en"
-            else "Dopasuj rejestr do użytkownika bez kopiowania błędów, agresji ani ryzykownego zachowania."
-        )
-    if adaptation.get("preserveRequestedArtifactStyle", True):
-        lines.append(
-            "The requested artifact style outranks conversational personality."
-            if lang == "en"
-            else "Styl zamawianego artefaktu ma pierwszeństwo przed osobowością rozmowy."
-        )
-    if adaptation.get("reduceHumorInSeriousContexts", True):
-        lines.append(
-            "Reduce humor in serious, risky, or sensitive contexts."
-            if lang == "en"
-            else "Ogranicz humor w kontekstach poważnych, ryzykownych lub wrażliwych."
-        )
-    if adaptation.get("mirrorLanguage", True):
-        lines.append(
-            "Reply in the user's language unless asked otherwise."
-            if lang == "en"
-            else "Odpowiadaj w języku użytkownika, chyba że poprosi inaczej."
-        )
-    if adaptation.get("allowCasualProfanity", False):
-        lines.append(
-            "Mild profanity may be used naturally in casual chat, but not automatically in formal artifacts."
-            if lang == "en"
-            else "W luźnym czacie dopuszczalne są naturalne, łagodne przekleństwa, ale nie przenoś ich automatycznie do formalnych artefaktów."
-        )
-
-    preamble = collaboration.get("preamble", "multiStepOnly")
-    preamble_text = {
-        "en": {
-            "off": "Do not announce work before answering.",
-            "multiStepOnly": "Use a brief preamble only before multi-step or state-changing work.",
-            "always": "Briefly state the plan before acting.",
-        },
-        "pl": {
-            "off": "Nie zapowiadaj pracy przed odpowiedzią.",
-            "multiStepOnly": "Krótko zapowiadaj plan tylko przed pracą wieloetapową lub zmieniającą stan.",
-            "always": "Przed działaniem krótko zapowiadaj plan.",
-        },
+    adaptation_text = {
+        "followUserRegister": (
+            "Match the user's register without copying mistakes, hostility, or unsafe behavior.",
+            "Dopasuj rejestr do użytkownika bez kopiowania błędów, agresji ani ryzykownego zachowania.",
+        ),
+        "preserveRequestedArtifactStyle": (
+            "The requested artifact style outranks conversational personality.",
+            "Styl zamawianego artefaktu ma pierwszeństwo przed osobowością rozmowy.",
+        ),
+        "reduceHumorInSeriousContexts": (
+            "Reduce humor in serious, risky, or sensitive contexts.",
+            "Ogranicz humor w kontekstach poważnych, ryzykownych lub wrażliwych.",
+        ),
+        "mirrorLanguage": (
+            "Reply in the user's language unless asked otherwise.",
+            "Odpowiadaj w języku użytkownika, chyba że poprosi inaczej.",
+        ),
+        "allowCasualProfanity": (
+            "Mild profanity may be used naturally in casual chat, but not automatically in formal artifacts.",
+            "W luźnym czacie dopuszczalne są naturalne, łagodne przekleństwa, ale nie przenoś ich automatycznie do formalnych artefaktów.",
+        ),
     }
-    if preamble not in preamble_text[lang]:
-        raise SystemExit(f"Unsupported collaboration.preamble: {preamble}")
-    lines.append(preamble_text[lang][preamble])
+    lang_index = 0 if lang == "en" else 1
+    for field, texts in adaptation_text.items():
+        if adaptation.get(field) is True:
+            lines.append(texts[lang_index])
 
-    for field, text in COLLAB[lang].items():
-        if collaboration.get(field, True):
+    for field in ("preamble", "initiative", "verification", "questionPolicy", "assumptionPolicy"):
+        add_enum(lines, collaboration, field, lang)
+
+    for field, text in COLLAB_BOOL[lang].items():
+        if collaboration.get(field) is True:
             lines.append(text)
+
+    for field, text in KNOWLEDGE[lang].items():
+        if knowledge.get(field) is True:
+            lines.append(text)
+
+    render_output(lines, output, lang)
 
     lines.append(
         "This profile does not grant tools, credentials, network access, permissions, or authority to change external state."
