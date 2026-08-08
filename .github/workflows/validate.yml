@@ -29,6 +29,26 @@ jobs:
             examples/profile.overlay.yaml \
             --schema schema/style-profile.schema.json \
             --output /tmp/profile.yaml
+          python tools/render_profile.py \
+            profiles/default.yaml \
+            examples/profile.overlay.yaml \
+            --schema schema/style-profile.schema.json \
+            --output /tmp/instructions.txt
+          python -m tools.render_profile \
+            profiles/default.yaml \
+            examples/profile.overlay.yaml \
+            --schema schema/style-profile.schema.json \
+            --output /tmp/instructions-module.txt
+          cmp /tmp/instructions.txt /tmp/instructions-module.txt
+          grep -q "Odpowiadaj w języku użytkownika" /tmp/instructions.txt
+          grep -q "Najpierw podaj odpowiedź" /tmp/instructions.txt
+          grep -q "pełnej walidacji" /tmp/instructions.txt
+          printf 'personality:\n' > /tmp/bad-overlay.yaml
+          if python tools/render_profile.py profiles/default.yaml /tmp/bad-overlay.yaml >/tmp/bad.out 2>/tmp/bad.err; then
+            echo "expected null personality overlay to fail" >&2
+            exit 1
+          fi
+          grep -q "personality.*must be a mapping" /tmp/bad.err
           python - <<'PY'
           import json
           import tomllib

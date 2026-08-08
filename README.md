@@ -23,7 +23,7 @@ Later layers win. No reverse synchronization is needed.
 ├── profiles/              portable base profiles
 ├── examples/              small overlay examples
 ├── schema/                profile schema
-├── tools/                 merge and maintenance helpers
+├── tools/                 merge and rendering helpers
 ├── instructions/          paste-ready portable instructions
 ├── styles/                style vocabulary and guidance
 ├── templates/             small project starting points
@@ -56,7 +56,7 @@ consumer-repo/
     └── generated/         optional composed output
 ```
 
-Merge and validate the public profile with one or more overlays:
+### Compose the effective profile
 
 ```bash
 python .ai/core/tools/merge_profile.py \
@@ -68,7 +68,21 @@ python .ai/core/tools/merge_profile.py \
 
 Mappings are merged recursively. Scalars and lists from later files replace earlier values. An overlay can therefore contain only the fields it actually changes. The schema applies to the final composed profile, not to each partial overlay by itself.
 
-Example:
+### Render ready-to-use instructions
+
+The renderer accepts the same ordered profile stack, so a consumer does not need a duplicated helper:
+
+```bash
+python .ai/core/tools/render_profile.py \
+  .ai/core/profiles/default.yaml \
+  .ai/profile.yaml \
+  --schema .ai/core/schema/style-profile.schema.json \
+  --output .ai/generated/instructions.txt
+```
+
+Language defaults to the composed profile's locale and can be overridden with `--language en` or `--language pl`.
+
+Example overlay:
 
 ```yaml
 id: my-private-profile
