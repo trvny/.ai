@@ -1,6 +1,6 @@
 # .ai
 
-Portable building blocks for AI-assisted projects: communication profiles, private overlays, conservative provider defaults, reusable skills, and small tools that keep configuration understandable.
+Portable building blocks for AI-assisted projects: communication profiles, private overlays, instruction and style libraries, conservative provider defaults, reusable skills, and small tools that keep configuration understandable.
 
 The repository is intentionally a **public core**, not a personal configuration dump. Project-specific preferences, identities, credentials, paths, and workflow rules belong in downstream private overlays.
 
@@ -24,6 +24,9 @@ Later layers win. No reverse synchronization is needed.
 ├── examples/              small overlay examples
 ├── schema/                profile schema
 ├── tools/                 merge and maintenance helpers
+├── instructions/          paste-ready portable instructions
+├── styles/                style vocabulary and guidance
+├── templates/             small project starting points
 ├── skills/                reusable opt-in skills
 ├── .claude/               conservative Claude Code reference defaults
 └── .codex/                conservative Codex reference defaults
@@ -91,6 +94,10 @@ The direction stays obvious:
 
 - reusable change -> this public repository
 - personal or project-specific change -> the downstream overlay
+
+## Portable library
+
+`instructions/instructions.md` provides compact ready-to-adapt instruction blocks. `styles/styles.md` documents the portable style vocabulary used by the profile schema. `templates/` contains deliberately small starters rather than a full application framework.
 
 ## Provider defaults
 
