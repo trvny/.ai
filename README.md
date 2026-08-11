@@ -97,7 +97,7 @@ Keep credentials, tokens, personal paths, private endpoints and machine-specific
 
 ## License
 
-[ISC](LICENSE). Use, fork and reshape it while keeping the copyright and license notice.
+[ISC](LICENSE)
 
 ---
 
