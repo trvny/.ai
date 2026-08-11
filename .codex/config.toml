@@ -23,19 +23,14 @@ exclude_slash_tmp = false
 [shell_environment_policy]
 inherit = "core"
 ignore_default_excludes = false
-exclude = [
-  "*KEY*",
-  "*SECRET*",
-  "*TOKEN*",
-  "ANTHROPIC_*",
-  "AZURE_*",
-  "CLOUDFLARE_*",
-  "GITHUB_*",
-  "OPENAI_*",
-]
 set = {}
-include_only = []
 experimental_use_profile = false
+
+# Canonical pattern table. Codex treats the legacy exclude/include_only arrays
+# as regular expressions; keep the patterns explicit and valid here instead.
+[shell_environment_policy.filters]
+".*(KEY|SECRET|TOKEN).*" = "exclude"
+"^(ANTHROPIC|AZURE|CLOUDFLARE|GITHUB|OPENAI)_.*" = "exclude"
 
 [analytics]
 enabled = false
