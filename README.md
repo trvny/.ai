@@ -31,6 +31,9 @@ Later layers win. Reusable changes go upstream; local differences stay downstrea
 
 ```text
 .ai/
+├── AGENTS.md      canonical repository guidance
+├── CLAUDE.md      Claude import shim -> AGENTS.md
+├── GEMINI.md      Gemini import shim -> AGENTS.md
 ├── profiles/      base profiles
 ├── examples/      overlay examples
 ├── schema/        profile schema
@@ -42,6 +45,8 @@ Later layers win. Reusable changes go upstream; local differences stay downstrea
 ├── .claude/       Claude reference defaults
 └── .codex/        Codex reference defaults
 ```
+
+`CLAUDE.md` and `GEMINI.md` are regular text import shims rather than symlinks, so the canonical `AGENTS.md` also works in Windows checkouts without requiring symlink support.
 
 Files here are building blocks. Providers do not automatically discover or apply everything in the repository.
 
