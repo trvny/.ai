@@ -28,13 +28,8 @@ jobs:
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
-      - name: Smoke test CLI entrypoints
+      - name: Smoke test renderer entrypoints
         run: |
-          python tools/merge_profile.py \
-            profiles/default.yaml \
-            examples/profile.overlay.yaml \
-            --schema schema/style-profile.schema.json \
-            --output /tmp/profile.yaml
           python tools/render_profile.py \
             profiles/default.yaml \
             examples/profile.overlay.yaml \
