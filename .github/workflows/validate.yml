@@ -22,21 +22,22 @@ jobs:
 
       - name: Validate Codex config schema
         run: |
-          curl --fail --location --retry 3 --silent --show-error \
+          curl --fail --location --retry 3 --connect-timeout 10 --max-time 30 \
+            --silent --show-error \
             https://developers.openai.com/codex/config-schema.json \
             --output /tmp/codex-config-schema.json
           python - <<'PY'
           import json
           import tomllib
 
-          from jsonschema import Draft7Validator
+          from jsonschema import validate
 
           with open("/tmp/codex-config-schema.json", encoding="utf-8") as handle:
               schema = json.load(handle)
           with open(".codex/config.toml", "rb") as handle:
               config = tomllib.load(handle)
 
-          Draft7Validator(schema).validate(config)
+          validate(instance=config, schema=schema)
           PY
 
       - name: Compile Python sources
