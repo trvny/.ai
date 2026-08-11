@@ -2,17 +2,31 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
-import tomllib
+import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from typing import Any
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools.merge_profile import merge_mapping, merge_profiles, validate_profile
 from tools.render_profile import language_for, render
+
+
+def load_toml(path: Path) -> dict[str, Any]:
+    try:
+        import tomllib
+    except ModuleNotFoundError as exc:  # Python < 3.11
+        raise unittest.SkipTest("TOML checks require Python 3.11+") from exc
+
+    with path.open("rb") as handle:
+        return tomllib.load(handle)
 
 
 class MergeProfileTests(unittest.TestCase):
@@ -62,6 +76,34 @@ class MergeProfileTests(unittest.TestCase):
         self.assertEqual(profile["collaboration"]["verification"], "strict")
         self.assertEqual(profile["collaboration"]["initiative"], "balanced")
 
+    def test_cli_serializes_the_composed_profile(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_path = Path(tmpdir) / "profile.yaml"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "tools/merge_profile.py"),
+                    str(ROOT / "profiles/default.yaml"),
+                    str(ROOT / "examples/profile.overlay.yaml"),
+                    "--schema",
+                    str(ROOT / "schema/style-profile.schema.json"),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
+            profile = yaml.safe_load(output_path.read_text(encoding="utf-8"))
+            validate_profile(profile, ROOT / "schema/style-profile.schema.json")
+
+        self.assertEqual(profile["id"], "my-private-profile")
+        self.assertEqual(profile["locale"], "pl-PL")
+        self.assertEqual(profile["personality"]["modifiers"]["concise"], 2)
+        self.assertEqual(profile["collaboration"]["verification"], "strict")
+
 
 class RenderProfileTests(unittest.TestCase):
     @staticmethod
@@ -109,12 +151,10 @@ class RepositoryContractTests(unittest.TestCase):
     def test_provider_config_files_parse(self) -> None:
         with (ROOT / ".claude/settings.json").open(encoding="utf-8") as handle:
             json.load(handle)
-        with (ROOT / ".codex/config.toml").open("rb") as handle:
-            tomllib.load(handle)
+        load_toml(ROOT / ".codex/config.toml")
 
     def test_codex_secret_filters_are_valid_and_effective(self) -> None:
-        with (ROOT / ".codex/config.toml").open("rb") as handle:
-            config = tomllib.load(handle)
+        config = load_toml(ROOT / ".codex/config.toml")
 
         policy = config["shell_environment_policy"]
         self.assertNotIn("exclude", policy)
