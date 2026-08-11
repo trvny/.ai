@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 import tomllib
 import unittest
@@ -110,6 +111,39 @@ class RepositoryContractTests(unittest.TestCase):
             json.load(handle)
         with (ROOT / ".codex/config.toml").open("rb") as handle:
             tomllib.load(handle)
+
+    def test_codex_secret_filters_are_valid_and_effective(self) -> None:
+        with (ROOT / ".codex/config.toml").open("rb") as handle:
+            config = tomllib.load(handle)
+
+        policy = config["shell_environment_policy"]
+        self.assertNotIn("exclude", policy)
+        self.assertNotIn("include_only", policy)
+
+        filters = policy["filters"]
+        excluded_patterns = [
+            re.compile(pattern)
+            for pattern, action in filters.items()
+            if action == "exclude"
+        ]
+        self.assertTrue(excluded_patterns)
+
+        for variable in (
+            "OPENAI_API_KEY",
+            "GITHUB_TOKEN",
+            "ANTHROPIC_API_KEY",
+            "CLOUDFLARE_API_TOKEN",
+            "MY_SECRET_VALUE",
+        ):
+            self.assertTrue(
+                any(pattern.search(variable) for pattern in excluded_patterns),
+                f"expected {variable} to be excluded",
+            )
+
+        self.assertFalse(
+            any(pattern.search("PATH") for pattern in excluded_patterns),
+            "PATH should not be excluded by credential filters",
+        )
 
     def test_published_skill_bundle_is_valid(self) -> None:
         with zipfile.ZipFile(ROOT / "skills/english-polish.skill") as archive:
