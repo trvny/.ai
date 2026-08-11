@@ -38,6 +38,7 @@ Later layers win. Reusable changes go upstream; local differences stay downstrea
 ├── examples/      overlay examples
 ├── schema/        profile schema
 ├── tools/         composition helpers
+├── tests/         core and repository contract tests
 ├── instructions/  reusable instructions
 ├── styles/        style guidance
 ├── templates/     project starters
