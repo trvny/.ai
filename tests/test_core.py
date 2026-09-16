@@ -186,7 +186,7 @@ class RepositoryContractTests(unittest.TestCase):
         )
 
     def test_published_skill_bundle_is_valid(self) -> None:
-        with zipfile.ZipFile(ROOT / "skills/english-polish.skill") as archive:
+        with zipfile.ZipFile(ROOT / "skills/english-polish.zip") as archive:
             self.assertIsNone(archive.testzip())
             names = set(archive.namelist())
             self.assertIn("english-polish/SKILL.md", names)
