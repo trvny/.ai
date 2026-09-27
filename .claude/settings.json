@@ -73,5 +73,17 @@
     ],
     "defaultMode": "default"
   },
-  "showTurnDuration": false
+  "showTurnDuration": false,
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh\""
+          }
+        ]
+      }
+    ]
+  }
 }
