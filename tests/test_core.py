@@ -142,15 +142,13 @@ class RenderProfileTests(unittest.TestCase):
 
 
 class RepositoryContractTests(unittest.TestCase):
-    def test_provider_entrypoints_are_portable_import_shims(self) -> None:
+    def test_provider_entrypoints_are_symlinks_to_agents(self) -> None:
         for name in ("CLAUDE.md", "GEMINI.md"):
             path = ROOT / name
-            self.assertFalse(path.is_symlink(), f"{name} must not require symlink support")
-            self.assertEqual(path.read_text(encoding="utf-8"), "@AGENTS.md\n")
+            self.assertTrue(path.is_symlink(), f"{name} must be a symlink")
+            self.assertEqual(path.readlink(), Path("AGENTS.md"))
 
-    def test_provider_config_files_parse(self) -> None:
-        with (ROOT / ".claude/settings.json").open(encoding="utf-8") as handle:
-            json.load(handle)
+    def test_codex_config_file_parses(self) -> None:
         load_toml(ROOT / ".codex/config.toml")
 
     def test_codex_secret_filters_are_valid_and_effective(self) -> None:
