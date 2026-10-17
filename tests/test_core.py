@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import json
-import re
 import subprocess
 import sys
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
-from typing import Any
 
 import yaml
 
@@ -17,16 +15,6 @@ sys.path.insert(0, str(ROOT))
 
 from tools.merge_profile import merge_mapping, merge_profiles, validate_profile
 from tools.render_profile import language_for, render
-
-
-def load_toml(path: Path) -> dict[str, Any]:
-    try:
-        import tomllib
-    except ModuleNotFoundError as exc:  # Python < 3.11
-        raise unittest.SkipTest("TOML checks require Python 3.11+") from exc
-
-    with path.open("rb") as handle:
-        return tomllib.load(handle)
 
 
 class MergeProfileTests(unittest.TestCase):
@@ -147,41 +135,6 @@ class RepositoryContractTests(unittest.TestCase):
             path = ROOT / name
             self.assertTrue(path.is_symlink(), f"{name} must be a symlink")
             self.assertEqual(path.readlink(), Path("AGENTS.md"))
-
-    def test_codex_config_file_parses(self) -> None:
-        load_toml(ROOT / ".codex/config.toml")
-
-    def test_codex_secret_filters_are_valid_and_effective(self) -> None:
-        config = load_toml(ROOT / ".codex/config.toml")
-
-        policy = config["shell_environment_policy"]
-        self.assertNotIn("exclude", policy)
-        self.assertNotIn("include_only", policy)
-
-        filters = policy["filters"]
-        excluded_patterns = [
-            re.compile(pattern)
-            for pattern, action in filters.items()
-            if action == "exclude"
-        ]
-        self.assertTrue(excluded_patterns)
-
-        for variable in (
-            "OPENAI_API_KEY",
-            "GITHUB_TOKEN",
-            "ANTHROPIC_API_KEY",
-            "CLOUDFLARE_API_TOKEN",
-            "MY_SECRET_VALUE",
-        ):
-            self.assertTrue(
-                any(pattern.search(variable) for pattern in excluded_patterns),
-                f"expected {variable} to be excluded",
-            )
-
-        self.assertFalse(
-            any(pattern.search("PATH") for pattern in excluded_patterns),
-            "PATH should not be excluded by credential filters",
-        )
 
     def test_published_skill_bundle_is_valid(self) -> None:
         with zipfile.ZipFile(ROOT / "skills/english-polish.zip") as archive:
