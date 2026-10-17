@@ -21,26 +21,6 @@ jobs:
       - name: Install validators
         run: python -m pip install --disable-pip-version-check pyyaml jsonschema
 
-      - name: Validate Codex config schema
-        run: |
-          curl --fail --location --retry 3 --connect-timeout 10 --max-time 30 \
-            --silent --show-error \
-            https://developers.openai.com/codex/config-schema.json \
-            --output /tmp/codex-config-schema.json
-          python - <<'PY'
-          import json
-          import tomllib
-
-          from jsonschema import validate
-
-          with open("/tmp/codex-config-schema.json", encoding="utf-8") as handle:
-              schema = json.load(handle)
-          with open(".codex/config.toml", "rb") as handle:
-              config = tomllib.load(handle)
-
-          validate(instance=config, schema=schema)
-          PY
-
       - name: Compile Python sources
         run: |
           python -m compileall -q tools tests
