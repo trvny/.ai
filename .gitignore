@@ -6,3 +6,6 @@ __pycache__/
 .dev.vars
 .ai/generated/
 generated/
+
+# Claude Code: cloud hooks/settings live in the environment setup script; local .claude/ is per-machine
+.claude/

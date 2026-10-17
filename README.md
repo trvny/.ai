@@ -42,8 +42,7 @@ Later layers win. Reusable changes go upstream; local differences stay downstrea
 ├── instructions/  reusable instructions
 ├── styles/        style guidance
 ├── templates/     project starters
-├── skills/        portable opt-in skills
-└── .claude/       Claude reference defaults
+└── skills/        portable opt-in skills
 ```
 
 `CLAUDE.md` and `GEMINI.md` are symlinks to the canonical `AGENTS.md`, keeping one maintained source of repository guidance.
