@@ -1,6 +1,6 @@
-# .ai Field Guide
+# Overprint: the .ai field guide
 
-Starlight / Astro wiki for the existing `.ai` project. Technical and editorial entrypoint; **not** a fork of canonical instructions, profile schemas or the composition engine.
+Starlight / Astro wiki for the existing `.ai` project. Theme: process inks; cyan core, magenta overlay, their overprint is the effective profile (`src/styles/overprint.css`). Technical and editorial entrypoint; **not** a fork of canonical instructions, profile schemas or the composition engine.
 
 ```sh
 cd wiki
