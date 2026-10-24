@@ -1,0 +1,18 @@
+---
+title: Overlays and composition
+description: Shared defaults plus local differences without parallel rulebooks.
+---
+
+## From layers to one effective profile
+
+The public profile defines a reusable base. A repository-specific overlay changes only what it needs. Later mappings merge recursively, while sequences and scalar values replace earlier values.
+
+```text
+public .ai core + project overlay → effective profile → provider adapters
+```
+
+The composition mechanism already lives in [tools/render_profile.py](https://github.com/trvny/.ai/blob/main/tools/render_profile.py), and its contract lives in [docs/profile-reference.md](https://github.com/trvny/.ai/blob/main/docs/profile-reference.md). Those remain the source of truth.
+
+### Next experiment
+
+An overlay playground could visualize the resulting configuration with sample data, but should invoke the canonical composition rules or generate its view from shared fixtures. Never reimplement the merge logic in a separate browser widget.

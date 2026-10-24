@@ -1,0 +1,18 @@
+---
+title: Design principles
+description: One core, many contexts, few surprises.
+---
+
+## A small common language
+
+A reliable agent environment does not need to be identical everywhere. It needs shared rules that travel well, and clear boundaries for the things that do not.
+
+- **Public core, private context.** Reusable guidance belongs upstream; credentials, project secrets and personal detail do not.
+- **One owner per rule.** Canonical instructions live once. Provider files are adapters, not rival constitutions.
+- **Layering is explicit.** Later overlays override earlier data. Mappings merge recursively; arrays and scalars replace.
+- **Portable by default.** No provider-specific assumption in a rule that is supposed to travel between tools.
+- **Tests matter.** Profiles are configuration, not literature immune to regression.
+
+For implementation specifics, read the canonical [profile reference](https://github.com/trvny/.ai/blob/main/docs/profile-reference.md) and [submodule guide](https://github.com/trvny/.ai/blob/main/docs/submodule.md).
+
+> Useful tools disappear into the work. Unclear boundaries remain visible, usually at 3 a.m.

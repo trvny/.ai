@@ -52,3 +52,16 @@ jobs:
             exit 1
           fi
           grep -q "personality.*must be a mapping" /tmp/bad.err
+
+  wiki:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: npm --prefix wiki ci --no-audit --no-fund
+      - run: npm --prefix wiki run build
+
