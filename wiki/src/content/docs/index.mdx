@@ -1,11 +1,13 @@
 ---
-title: The Field Guide
-description: A field guide to the portable core, personalities and layers that make an agent system coherent.
+title: Overprint
+description: The .ai field guide. A shared public core, local overlays, and the one effective profile they print together.
 template: splash
 hero:
-  tagline: Portable intelligence starts with portable principles.
+  tagline: Print the core once. Overprint what is local.
+  image:
+    html: '<svg class="op-plate" viewBox="0 0 360 310" role="img" aria-label="A cyan public core sheet and a magenta project overlay sheet printed over each other; where they overlap is the effective profile."><rect class="op-sheet op-core" x="30" y="40" width="200" height="160"/><text class="op-label" x="30" y="31">public core</text><g class="op-overlay-group"><rect class="op-sheet op-overlay" x="120" y="100" width="210" height="170"/><text class="op-label" x="330" y="289" text-anchor="end">project overlay</text></g><text class="op-label op-label-overlap" x="175" y="146" text-anchor="middle">effective</text><text class="op-label op-label-overlap" x="175" y="163" text-anchor="middle">profile</text><g class="op-reg"><circle cx="16" cy="26" r="6"/><path d="M6 26h20M16 16v20"/></g><g class="op-reg"><circle cx="344" cy="26" r="6"/><path d="M334 26h20M344 16v20"/></g><g class="op-reg"><circle cx="16" cy="284" r="6"/><path d="M6 284h20M16 274v20"/></g><g class="op-reg"><circle cx="344" cy="284" r="6"/><path d="M334 284h20M344 274v20"/></g></svg>'
   actions:
-    - text: Explore the design
+    - text: Read the principles
       link: /.ai/principles/
       icon: right-arrow
     - text: View the source
@@ -13,20 +15,14 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-A collection of durable instructions, profiles, overlays, tools and skills. Not an AI personality bazaar. A map of what can be shared, what stays local, and how the pieces combine without multiplying sources of truth.
+The field guide to [`.ai`](https://github.com/trvny/.ai): durable instructions, profiles, overlays, tools and skills. Not an AI personality bazaar. A map of what can be shared, what stays local, and how the two combine without multiplying sources of truth.
 
 <CardGrid>
-  <Card title="Principles" icon="open-book">
-    Why the portable core is intentionally small and why the last overlay wins.
-  </Card>
-  <Card title="Composition" icon="puzzle">
-    Trace how base configuration and project-level differences produce one effective profile.
-  </Card>
-  <Card title="Field notes" icon="document">
-    Practical experiments, failures, good surprises and future directions.
-  </Card>
+  <LinkCard title="Principles" href="/.ai/principles/" description="Why the portable core stays small and the last overlay wins." />
+  <LinkCard title="Composition" href="/.ai/overlays/" description="How a base profile and a project overlay produce one effective profile." />
+  <LinkCard title="Field notes" href="/.ai/field-notes/" description="Experiments, failures, good surprises and what comes next." />
 </CardGrid>
 
-This wiki is an editorial entrance to the existing [source repository](https://github.com/trvny/.ai). Canonical configuration, schemas and scripts remain in the repository, not in duplicated Markdown pages.
+Canonical configuration, schemas and scripts live in the repository. This site explains them; it does not copy them.
