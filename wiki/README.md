@@ -1,6 +1,6 @@
 # .ai Field Guide
 
-Starlight / Astro wiki prototype for the existing `.ai` project. Technical and editorial entrypoint; **not** a fork of canonical instructions, profile schemas or the composition engine.
+Starlight / Astro wiki for the existing `.ai` project. Technical and editorial entrypoint; **not** a fork of canonical instructions, profile schemas or the composition engine.
 
 ```sh
 cd wiki
@@ -9,7 +9,9 @@ npm run dev
 npm run build
 ```
 
-This builds to `wiki/dist/`. Hosting and custom domain are intentionally not configured yet. A later deployment can use Cloudflare or GitHub Pages, after route and visibility review.
+The public target is **https://trvny.github.io/.ai/**. The [Wiki Pages workflow](../.github/workflows/wiki-pages.yml) builds only the `wiki/` source and deploys to GitHub Pages. Enable **Settings → Pages → Build and deployment → GitHub Actions** once for this repository. Until that setting is enabled and the deployment succeeds, treat the URL as a target, not a confirmed live website.
+
+The Astro `base` is `/.ai`, matching the repository project URL. Existing source docs remain canonical.
 
 ## Next
 

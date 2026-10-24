@@ -2,6 +2,8 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
+  site: 'https://trvny.github.io',
+  base: '/.ai',
   integrations: [
     starlight({
       title: '.ai · Field Guide',
