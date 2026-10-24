@@ -1,0 +1,32 @@
+---
+title: The Field Guide
+description: A field guide to the portable core, personalities and layers that make an agent system coherent.
+template: splash
+hero:
+  tagline: Portable intelligence starts with portable principles.
+  actions:
+    - text: Explore the design
+      link: /principles/
+      icon: right-arrow
+    - text: View the source
+      link: https://github.com/trvny/.ai
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+A collection of durable instructions, profiles, overlays, tools and skills. Not an AI personality bazaar. A map of what can be shared, what stays local, and how the pieces combine without multiplying sources of truth.
+
+<CardGrid>
+  <Card title="Principles" icon="open-book">
+    Why the portable core is intentionally small and why the last overlay wins.
+  </Card>
+  <Card title="Composition" icon="puzzle">
+    Trace how base configuration and project-level differences produce one effective profile.
+  </Card>
+  <Card title="Field notes" icon="document">
+    Practical experiments, failures, good surprises and future directions.
+  </Card>
+</CardGrid>
+
+This wiki is an editorial entrance to the existing [source repository](https://github.com/trvny/.ai). Canonical configuration, schemas and scripts remain in the repository, not in duplicated Markdown pages.
