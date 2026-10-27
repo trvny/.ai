@@ -9,3 +9,11 @@ generated/
 
 # Claude Code: cloud hooks/settings live in the environment setup script; local .claude/ is per-machine
 .claude/
+
+# Local tooling / agent state
+node_modules/
+.wrangler/
+*.log
+.pytest_cache/
+.ruff_cache/
+CLAUDE.local.md
