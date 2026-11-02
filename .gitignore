@@ -17,3 +17,7 @@ node_modules/
 .pytest_cache/
 .ruff_cache/
 CLAUDE.local.md
+
+# Generated Astro wiki output
+/wiki/**/.astro/
+/wiki/**/dist/
