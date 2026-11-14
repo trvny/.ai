@@ -92,7 +92,7 @@ Keep credentials, tokens, personal paths, private endpoints and machine-specific
 - simple files before frameworks
 - explicit behavior before hidden magic
 
-## License
+## [License](LICENSE)📜
 
 [ISC](LICENSE)
 
@@ -116,7 +116,3 @@ Keep credentials, tokens, personal paths, private endpoints and machine-specific
 <i>❝“If you think your users are idiots, only idiots will use it.”— Linus Torvalds❞</i>
 <!--ENDS_HERE_QUOTE_README-->
 <!-- markdownlint-enable MD033 -->
-
-## Field Guide (early preview)
-
-The [Starlight wiki source](wiki/) adds a technical and editorial tour of the portable core. Source files in `profiles/`, `tools/`, `schema/` and `docs/` remain canonical. See [wiki roadmap](wiki/README.md).
