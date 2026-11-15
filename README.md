@@ -113,6 +113,6 @@ Keep credentials, tokens, personal paths, private endpoints and machine-specific
 
 <!-- markdownlint-disable MD033 -->
 <!--STARTS_HERE_QUOTE_README-->
-<i>❝“If you think your users are idiots, only idiots will use it.”— Linus Torvalds❞</i>
+<i>❝If you don't read the newspaper, you're uninformed. If you read the newspaper, you're mis-informed. — Mark Twain❞</i>
 <!--ENDS_HERE_QUOTE_README-->
 <!-- markdownlint-enable MD033 -->
