@@ -23,8 +23,8 @@ constitution, architecture manual or task tracker.
 Tell the agent: "Use Travny Lean for this change" or "Continue Travny Lean in
 <repo/branch/PR>". Read this guide via repository tools:
 `trvny/.ai/templates/spec-kit/travny-lean/README.md` at the agreed ref (prefer
-the project's pinned `.ai/core` ref; otherwise an explicitly chosen release
-or main). GitHub file reads/writes work without a checkout. Slash commands
+the project's pinned `.ai/core` ref; otherwise an explicitly chosen reviewed
+commit). GitHub file reads/writes work without a checkout. Slash commands
 are optional; no pretend shell access.
 
 Use existing PR body or existing feature document for a short change. For
@@ -47,15 +47,21 @@ For an already initialized project, using Spec Kit 1.4.4 or newer:
 ```sh
 specify preset add --dev .ai/core/templates/spec-kit/travny-lean
 specify preset list
+specify preset resolve speckit.implement
 ```
+
+Check resolution for all six phases (`speckit.<phase>`); Travny Lean must win.
+Inspect the generated integration commands/skills for the guide reference.
+If another preset wins, choose precedence explicitly (lower priority number
+wins); do not silently override a project's other presets.
 
 Adjust the path if the core is checked out elsewhere. Initialize only when
 the project actually wants native Spec Kit; inspect existing integrations
 and preserve their config. Install copies preset files; update intentionally
 from the chosen core revision. Generic integration does not register command
 overrides: use the chat path above. This preset replaces six core commands;
-not a new workflow engine. Other native commands/extensions retain their
-own behavior; use only when helpful.
+not a new workflow engine. Unreplaced native commands retain their own
+behavior. Preserve configured extension hooks as described below.
 
 Native commands read this installed README
 (`.specify/presets/travny-lean/README.md`), not a moving remote source.
@@ -64,8 +70,25 @@ guessing policy. Keep the existing feature directory if continuing.
 For a new feature choose a meaningful repo-relative path, default
 `specs/<slug>`; inspect collisions. Set `.specify/feature.json` with
 `{"feature_directory":"specs/<slug>"}` only for the selected feature. Never
-overwrite another active feature silently. Existing branch/PR rules win;
-no automatic branch creation in these commands.
+overwrite another active feature silently. Before selecting, inspect
+`SPECIFY_FEATURE_DIRECTORY` if available; if it conflicts, require the
+operator to unset or align it before writing the pointer or artifacts.
+Existing branch/PR rules win; no automatic branch creation in these commands.
+
+### Native extension hooks
+
+For each replaced phase, inspect `.specify/extensions.yml` if present.
+Before phase work, handle `hooks.before_<phase>`; after successful phase
+work, handle `hooks.after_<phase>`. Preserve order. Skip explicitly disabled
+hooks and defer nonempty conditions to Spec Kit's HookExecutor; do not
+interpret conditions yourself. For enabled unconditional hooks, offer
+optional hooks without auto-running them; invoke mandatory (`optional: false`)
+hooks via the actual integration and await results. Never merely print a
+command and claim it ran. If config cannot be parsed, report the error and
+that no hooks were checked, including mandatory ones. Do not claim successful
+completion if mandatory hooks are blocked, unavailable or fail. Report policy
+conflicts (e.g. automatic branch creation) rather than bypassing a hook or
+repo authorization. No new hooks or gates required for adoption.
 
 ## Phases (scale to the change)
 
@@ -93,8 +116,12 @@ no automatic branch creation in these commands.
   Chat: use the existing artifact or PR for evidence; continue safe fixes
   if implementation is authorized. Pending checks are not a completed change.
 
-For native plan/tasks/implement/converge, read the selected feature pointer,
-constitution if present and relevant local guidance, then existing artifacts.
+For native plan/tasks/implement/converge, resolve `SPECIFY_FEATURE_DIRECTORY`
+when nonempty, otherwise `.specify/feature.json`. Resolve relative paths from
+the repo root; reject paths outside the repo. Keep this resolution read-only;
+do not rewrite the saved pointer. If environment access is unavailable and
+an override cannot be ruled out, disclose the limitation and avoid ambiguous
+writes. Read the constitution if present, local guidance and selected artifacts.
 If a required phase artifact is absent, name the missing file; do not invent
 prior work. Native specify/plan/tasks write only their designated artifact
 (and specify's feature pointer); implementation may update intent with a
