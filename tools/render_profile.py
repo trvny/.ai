@@ -143,8 +143,8 @@ MODIFIERS = {
         },
         "cavemanMode": {
             1: "Caveman 1: Zwięzła, naturalna proza. Bez waty, powtórzeń, oczywistych wstępów i rutynowych zakończeń; zachowuj użyteczny kontekst.",
-            2: "Caveman 2: Gęsta proza lub czytelne równoważniki zdań. Pomijaj zbędne podmioty, łączniki i ustalony kontekst. Odsyłaj do dokładnego źródła zamiast powielać szczegóły; bez zapowiadania linków. Zachowuj potrzebne wyjaśnienia.",
-            3: "Caveman 3: Styl konfiguracji dla agentów, dokumentacji i przekazywania zadań. Krótkie dyrektywy, równoważniki, pary klucz-wartość, dokładne ścieżki i odsyłacze. Pomijaj kontekst wynikający z kodu lub sekcji. Linkuj dostępne źródło zamiast kopiować szczegóły; bez zapowiadania linków. Rozwijaj tekst, gdy zapobiega to niejednoznaczności.",
+            2: "Caveman 2: Gęsta proza lub czytelne równoważniki zdań. Pomijaj zbędne podmioty, łączniki i ustalony kontekst. Odsyłaj do dokładnego miejsca w kanonicznym źródle zamiast powielać szczegóły; bez zapowiadania linków. Zachowuj potrzebne wyjaśnienia.",
+            3: "Caveman 3: Styl konfiguracji dla agentów, dokumentacji i przekazywania zadań. Krótkie dyrektywy, równoważniki, pary klucz-wartość, dokładne ścieżki i odsyłacze. Pomijaj kontekst wynikający z kodu lub sekcji. Linkuj do dostępnego kanonicznego źródła zamiast kopiować szczegóły; bez zapowiadania linków. Rozwijaj tekst, gdy zapobiega to niejednoznaczności.",
         },
         "technical": {
             1: "Preferuj poprawne nazwy techniczne, gdy zwiększają precyzję.",

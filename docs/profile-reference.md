@@ -112,7 +112,9 @@ personality:
     cavemanMode: 3
 ```
 
-Default: `0`; opt in. Existing `concise` settings remain independent.
+Default: off (omitted). Opt in via an overlay; use matching schema and renderer
+revisions. Older schemas reject the new key. Existing `concise` settings
+remain independent.
 
 ## Adaptation
 
