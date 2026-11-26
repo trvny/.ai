@@ -1,0 +1,47 @@
+schema_version: "1.0"
+preset:
+  id: travny-lean
+  name: Travny Lean
+  version: "0.1.0"
+  description: "Opt-in, low-ceremony SDD; chat-friendly handoffs"
+  author: travny
+  repository: "https://github.com/trvny/.ai"
+  license: ISC
+requires:
+  speckit_version: ">=1.4.4"
+provides:
+  templates:
+    - type: command
+      name: speckit.constitution
+      file: commands/speckit.constitution.md
+      description: "Create or update a lean constitution index."
+      replaces: speckit.constitution
+    - type: command
+      name: speckit.specify
+      file: commands/speckit.specify.md
+      description: "Specify an outcome and acceptance criteria."
+      replaces: speckit.specify
+    - type: command
+      name: speckit.plan
+      file: commands/speckit.plan.md
+      description: "Plan a scoped implementation."
+      replaces: speckit.plan
+    - type: command
+      name: speckit.tasks
+      file: commands/speckit.tasks.md
+      description: "Write actionable implementation tasks."
+      replaces: speckit.tasks
+    - type: command
+      name: speckit.implement
+      file: commands/speckit.implement.md
+      description: "Implement and verify selected work."
+      replaces: speckit.implement
+    - type: command
+      name: speckit.converge
+      file: commands/speckit.converge.md
+      description: "Check implementation against intent and append missing tasks."
+      replaces: speckit.converge
+tags:
+  - lean
+  - minimal
+  - workflow
