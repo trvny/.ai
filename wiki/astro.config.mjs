@@ -12,6 +12,7 @@ export default defineConfig({
       favicon: '/favicon.svg',
       customCss: ['./src/styles/overprint.css'],
       head: [
+        { tag: 'meta', attrs: { name: 'google-site-verification', content: 'xbXKq1w3ClpoMlxws6qobmZjpSmGVhi2xbrf7kwJV0s' } },
         { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' } },
         { tag: 'link', attrs: { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=swap' } },
       ],
