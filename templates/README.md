@@ -6,6 +6,7 @@ Small starting points, not a framework wearing a hard hat.
 - `wrangler.jsonc`: baseline Cloudflare Worker configuration with placeholders and no secrets.
 - `.dev.vars.example`: names for common local credentials; copy it to an ignored `.dev.vars` and fill values locally.
 - `outcome-task.md`: compact outcome-first brief for complex reusable tasks.
+- [`spec-kit/travny-lean/`](spec-kit/travny-lean/README.md): opt-in SDD preset and CLI-free chat workflow.
 
 Review every template before copying it into a real project. Remove unused
 bindings, dependencies, fields, and assumptions.
