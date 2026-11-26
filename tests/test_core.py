@@ -137,6 +137,8 @@ class RenderProfileTests(unittest.TestCase):
                         self.assertEqual(rendered, original)
                     else:
                         self.assertIn(f"Caveman {level}:", rendered)
+                        if level >= 2:
+                            self.assertIn("canonical" if lang == "en" else "kanoniczn", rendered)
                         self.assertIn(
                             "Compress wording, not reasoning or meaning."
                             if lang == "en"
@@ -150,7 +152,8 @@ class RenderProfileTests(unittest.TestCase):
     def test_caveman_mode_schema_and_overlay(self) -> None:
         base = merge_profiles([ROOT / "profiles/default.yaml"])
         schema = ROOT / "schema/style-profile.schema.json"
-        self.assertEqual(base["personality"]["modifiers"]["cavemanMode"], 0)
+        self.assertNotIn("cavemanMode", base["personality"]["modifiers"])
+        validate_profile(base, schema)
         for level in (0, 1, 2, 3, None):
             profile = merge_mapping(
                 base, {"personality": {"modifiers": {"cavemanMode": level}}}
