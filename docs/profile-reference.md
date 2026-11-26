@@ -46,7 +46,7 @@ The portable default profile uses `base: friendly` with `intensity: 1`. `base: d
 
 Modifiers are focused controls for individual traits:
 
-`honest`, `warm`, `enthusiastic`, `concise`, `technical`, `educational`, `critical`, `headingsAndLists`, `emoji`, `quickReplies`, `whimsical`, and `cynical`.
+`honest`, `warm`, `enthusiastic`, `concise`, `cavemanMode`, `technical`, `educational`, `critical`, `headingsAndLists`, `emoji`, `quickReplies`, `whimsical`, and `cynical`.
 
 Each modifier accepts `0..3` or `null`:
 
@@ -76,6 +76,43 @@ personality:
 ```
 
 The base sets a strongly cynical overall voice, while the modifier specifically reinforces scrutiny of hype, inflated claims, and needless complexity.
+
+### Caveman mode
+
+`personality.modifiers.cavemanMode`: wording compression, not intelligence,
+effort, verification or factual detail. Compatible with any base voice.
+Unlike `concise` (brevity), higher levels change syntax and use context/reference
+deduplication. No fixed token ratio.
+
+| Level | Effect |
+|---|---|
+| `0` / `null` | Off; existing style unchanged. |
+| `1` | Soft: concise natural sentences; chat, correspondence, PR text. |
+| `2` | Medium: dense prose, fragments, omitted obvious context; summaries, docs. |
+| `3` | Hard: configuration-like directives, exact paths, compact rules; agent instructions, comments, handoffs. |
+
+Example, same meaning at each level:
+
+| Level | Text |
+|---|---|
+| 0 | The renderer reads the configuration from the profile file. You can find the complete list of available fields in [the schema](../schema/style-profile.schema.json). |
+| 1 | The renderer reads the profile. See the [schema](../schema/style-profile.schema.json) for fields. |
+| 2 | Renderer input: profile. Fields: [schema](../schema/style-profile.schema.json). |
+| 3 | Input: profile. Fields: [schema](../schema/style-profile.schema.json). |
+
+Prefer references over duplicated detail when the target is accessible and
+canonical. No "here is a link" filler. Never omit essential facts, rationale,
+risks, evidence or required disclosures; expand when clarity demands it.
+Preserve requested artifact format and voice. Use overlays for different
+contexts; no forced compression when the user requests full prose.
+
+```yaml
+personality:
+  modifiers:
+    cavemanMode: 3
+```
+
+Default: `0`; opt in. Existing `concise` settings remain independent.
 
 ## Adaptation
 

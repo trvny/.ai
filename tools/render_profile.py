@@ -74,6 +74,11 @@ MODIFIERS = {
             2: "Remove repetition, routine framing, and unnecessary introductions.",
             3: "Compress aggressively: lead with the result and remove repetition, routine framing, and ritual closings.",
         },
+        "cavemanMode": {
+            1: "Caveman 1: Concise, natural prose. Cut filler, repetition, obvious setup and routine closings; preserve useful context.",
+            2: "Caveman 2: Dense prose or clear fragments. Drop redundant subjects, transitions and context already established. Prefer exact canonical links to duplicated detail; no link-announcement filler. Keep necessary explanations.",
+            3: "Caveman 3: Configuration-like writing for agents, docs and handoffs. Prefer compact directives, fragments, key-value pairs, exact paths and references. Omit context inferable from the surrounding code or section. Link to accessible canonical detail instead of copying it; no link-announcement filler. Expand when needed to prevent ambiguity.",
+        },
         "technical": {
             1: "Prefer correct technical names when they improve precision.",
             2: "Use exact technical names, constraints, and relevant implementation details.",
@@ -135,6 +140,11 @@ MODIFIERS = {
             1: "Przycinaj oczywiste powtórzenia i zbędne wstępy.",
             2: "Usuwaj powtórzenia, rutynowe ramowanie i zbędne wstępy.",
             3: "Kompresuj agresywnie: zaczynaj od wyniku i usuwaj powtórzenia, rutynowe ramowanie oraz rytualne zakończenia.",
+        },
+        "cavemanMode": {
+            1: "Caveman 1: Zwięzła, naturalna proza. Bez waty, powtórzeń, oczywistych wstępów i rutynowych zakończeń; zachowuj użyteczny kontekst.",
+            2: "Caveman 2: Gęsta proza lub czytelne równoważniki zdań. Pomijaj zbędne podmioty, łączniki i ustalony kontekst. Odsyłaj do dokładnego źródła zamiast powielać szczegóły; bez zapowiadania linków. Zachowuj potrzebne wyjaśnienia.",
+            3: "Caveman 3: Styl konfiguracji dla agentów, dokumentacji i przekazywania zadań. Krótkie dyrektywy, równoważniki, pary klucz-wartość, dokładne ścieżki i odsyłacze. Pomijaj kontekst wynikający z kodu lub sekcji. Linkuj dostępne źródło zamiast kopiować szczegóły; bez zapowiadania linków. Rozwijaj tekst, gdy zapobiega to niejednoznaczności.",
         },
         "technical": {
             1: "Preferuj poprawne nazwy techniczne, gdy zwiększają precyzję.",
@@ -412,6 +422,13 @@ def render(profile: dict[str, Any], lang: str) -> str:
         choices = MODIFIERS[lang].get(name)
         if choices:
             lines.append(choices[level])
+
+    if any(name == "cavemanMode" for name, _ in active):
+        lines.append(
+            "Compress wording, not reasoning or meaning. Preserve facts, evidence, uncertainty, constraints, risks and required disclosures. Links must be relevant and accessible; include essential information inline. Respect the requested artifact style."
+            if lang == "en"
+            else "Kompresuj słowa, nie rozumowanie ani znaczenie. Zachowuj fakty, dowody, niepewność, ograniczenia, ryzyko i wymagane informacje. Linki muszą być trafne i dostępne; kluczowe informacje podawaj bezpośrednio. Szanuj wymagany styl artefaktu."
+        )
 
     adaptation_text = {
         "followUserRegister": (
