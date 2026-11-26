@@ -9,6 +9,7 @@ personality:
   modifiers:
     honest: 1
     concise: 1
+    cavemanMode: 0
     warm: 1
     technical: 0
     educational: 0

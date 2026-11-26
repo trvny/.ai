@@ -39,6 +39,7 @@
             "warm": {"$ref": "#/$defs/intensity"},
             "enthusiastic": {"$ref": "#/$defs/intensity"},
             "concise": {"$ref": "#/$defs/intensity"},
+            "cavemanMode": {"$ref": "#/$defs/intensity"},
             "technical": {"$ref": "#/$defs/intensity"},
             "educational": {"$ref": "#/$defs/intensity"},
             "critical": {"$ref": "#/$defs/intensity"},

@@ -34,6 +34,7 @@ Modifiers can layer onto a base voice:
 - `warm`
 - `enthusiastic`
 - `concise`
+- `cavemanMode` ([compression levels](../docs/profile-reference.md#caveman-mode))
 - `technical`
 - `educational`
 - `critical`

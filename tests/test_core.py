@@ -123,6 +123,58 @@ class RenderProfileTests(unittest.TestCase):
         self.assertNotIn("clearly visible", rendered)
         self.assertNotIn("strongly shape tone and phrasing", rendered)
 
+    def test_caveman_mode_levels_and_locale(self) -> None:
+        for lang in ("en", "pl"):
+            baseline = {"personality": {"base": "friendly"}, "collaboration": {}}
+            original = render(baseline, lang)
+            for level in (None, 0, 1, 2, 3):
+                with self.subTest(lang=lang, level=level):
+                    profile = merge_mapping(
+                        baseline, {"personality": {"modifiers": {"cavemanMode": level}}}
+                    )
+                    rendered = render(profile, lang)
+                    if level in (None, 0):
+                        self.assertEqual(rendered, original)
+                    else:
+                        self.assertIn(f"Caveman {level}:", rendered)
+                        self.assertIn(
+                            "Compress wording, not reasoning or meaning."
+                            if lang == "en"
+                            else "Kompresuj słowa, nie rozumowanie ani znaczenie.",
+                            rendered,
+                        )
+                        for other in (1, 2, 3):
+                            if other != level:
+                                self.assertNotIn(f"Caveman {other}:", rendered)
+
+    def test_caveman_mode_schema_and_overlay(self) -> None:
+        from jsonschema import ValidationError
+
+        base = merge_profiles([ROOT / "profiles/default.yaml"])
+        schema = ROOT / "schema/style-profile.schema.json"
+        self.assertEqual(base["personality"]["modifiers"]["cavemanMode"], 0)
+        for level in (0, 1, 2, 3, None):
+            profile = merge_mapping(
+                base, {"personality": {"modifiers": {"cavemanMode": level}}}
+            )
+            validate_profile(profile, schema)
+        for invalid in (-1, 4, True, "3"):
+            with self.subTest(invalid=invalid):
+                profile = merge_mapping(
+                    base, {"personality": {"modifiers": {"cavemanMode": invalid}}}
+                )
+                with self.assertRaises(ValidationError):
+                    validate_profile(profile, schema)
+        enabled = merge_mapping(
+            base, {"personality": {"modifiers": {"cavemanMode": 3}}}
+        )
+        cleared = merge_mapping(
+            enabled, {"personality": {"modifiers": {"cavemanMode": None}}}
+        )
+        self.assertEqual(render(base, "en"), render(cleared, "en"))
+        self.assertIn("Trim obvious repetition", render(enabled, "en"))
+        self.assertIn("Do not invent facts", render(enabled, "en"))
+
     def test_language_is_inferred_from_locale(self) -> None:
         self.assertEqual(language_for({"locale": "pl-PL"}, "auto"), "pl")
         self.assertEqual(language_for({"locale": "en-US"}, "auto"), "en")
