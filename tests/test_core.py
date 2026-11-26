@@ -148,8 +148,6 @@ class RenderProfileTests(unittest.TestCase):
                                 self.assertNotIn(f"Caveman {other}:", rendered)
 
     def test_caveman_mode_schema_and_overlay(self) -> None:
-        from jsonschema import ValidationError
-
         base = merge_profiles([ROOT / "profiles/default.yaml"])
         schema = ROOT / "schema/style-profile.schema.json"
         self.assertEqual(base["personality"]["modifiers"]["cavemanMode"], 0)
@@ -163,7 +161,7 @@ class RenderProfileTests(unittest.TestCase):
                 profile = merge_mapping(
                     base, {"personality": {"modifiers": {"cavemanMode": invalid}}}
                 )
-                with self.assertRaises(ValidationError):
+                with self.assertRaisesRegex(SystemExit, "Profile validation failed"):
                     validate_profile(profile, schema)
         enabled = merge_mapping(
             base, {"personality": {"modifiers": {"cavemanMode": 3}}}
