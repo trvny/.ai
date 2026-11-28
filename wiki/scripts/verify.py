@@ -1,9 +1,9 @@
 """Check public output paths and metadata after Astro build."""
 import json
+import re
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
-from xml.etree import ElementTree
 
 DIST = Path(__file__).resolve().parents[1] / "dist"
 BASE = "https://trvny.github.io/.ai/"
@@ -41,8 +41,11 @@ class Metadata(HTMLParser):
 
 
 def main():
-    sitemap = ElementTree.parse(DIST / "sitemap.xml")
-    urls = [node.text for node in sitemap.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc")]
+    sitemap = (DIST / "sitemap.xml").read_text(encoding="utf-8")
+    urls = re.findall(r"<loc>([^<>&]+)</loc>", sitemap)
+    expected = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    expected += "".join(f"  <url><loc>{url}</loc></url>\n" for url in urls) + "</urlset>\n"
+    assert sitemap == expected, "Unexpected sitemap structure"
     assert urls and len(urls) == len(set(urls))
     index = (DIST / "llms.txt").read_text(encoding="utf-8")
     full = (DIST / "llms-full.txt").read_text(encoding="utf-8")

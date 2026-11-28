@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "python scripts/generate.py && astro dev",
+    "generate": "python scripts/generate.py",
+    "dev": "npm run generate && astro dev",
     "build": "python scripts/generate.py && astro build && python scripts/verify.py",
     "preview": "astro preview"
   },
