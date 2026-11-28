@@ -6,10 +6,10 @@ export default defineConfig({
   base: '/.ai',
   integrations: [
     starlight({
-      title: 'Overprint',
-      description: 'The .ai field guide: shared core, local overlays, one effective profile.',
+      title: '.ai Wiki',
+      description: 'Portable AI core: instructions, profiles, overlays, tools, templates and skills.',
       logo: { src: './src/assets/mark.svg' },
-      favicon: '/favicon.svg',
+      favicon: '/.ai/favicon.svg',
       customCss: ['./src/styles/overprint.css'],
       head: [
         { tag: 'meta', attrs: { name: 'google-site-verification', content: 'xbXKq1w3ClpoMlxws6qobmZjpSmGVhi2xbrf7kwJV0s' } },
@@ -20,10 +20,15 @@ export default defineConfig({
       sidebar: [
         { label: 'Start here', items: [
           { label: 'Overview', slug: '' },
-          { label: 'Design principles', slug: 'principles' },
-          { label: 'Overlays and composition', slug: 'overlays' },
-          { label: 'Field notes', slug: 'field-notes' },
+          { label: 'Core rules', slug: 'principles' },
+          { label: 'Compose and render', slug: 'overlays' },
+          { label: 'Repository map', slug: 'field-notes' },
         ] },
+        { label: 'Guides', autogenerate: { directory: 'guides' } },
+        { label: 'Reference', autogenerate: { directory: 'reference' } },
+        { label: 'Tools', autogenerate: { directory: 'tools' } },
+        { label: 'Templates', items: [{ label: 'Overview', slug: 'templates' }, { autogenerate: { directory: 'templates' } }] },
+        { label: 'Skills', slug: 'skills' },
       ],
     }),
   ],
