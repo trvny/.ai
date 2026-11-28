@@ -1,6 +1,4 @@
 ---
-# Gemini CLI — on demand only. Same shape as claude-universal.yml, tuned for
-# PR review.
 #
 #   review    `gemini` label on a PR, or Actions ▸ Run workflow / `gh workflow
 #             run gemini-universal.yml -f pr=N -f focus="…"`
@@ -113,7 +111,7 @@ jobs:
   # review — the main event. Label or dispatch.
   # ════════════════════════════════════════════════════════════════════════
   review:
-    name: Gemini (review #${{ inputs.pr || github.event.pull_request.number }})
+    name: Gemini (review) (#${{ inputs.pr || github.event.pull_request.number }})
     # auto: replace the label test with `github.event.action != 'labeled' ||
     # github.event.label.name == 'gemini'` after adding PR types above.
     if: |
