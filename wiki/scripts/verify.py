@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 DIST = Path(__file__).resolve().parents[1] / "dist"
-BASE = "https://trvny.github.io/.ai/"
+BASE = "https://ai.bartek.lol/"
 
 
 class Metadata(HTMLParser):
@@ -60,7 +60,7 @@ def main():
         metadata.feed(path.read_text(encoding="utf-8"))
         assert metadata.canonical and metadata.canonical.rstrip("/") == url.rstrip("/"), (url, metadata.canonical)
         assert metadata.description, url
-        assert metadata.favicon and urlsplit(metadata.favicon).path == "/.ai/favicon.svg", (url, metadata.favicon)
+        assert metadata.favicon and urlsplit(metadata.favicon).path == "/favicon.svg", (url, metadata.favicon)
         types = {schema.get("@type") for schema in metadata.schemas}
         assert ("TechArticle" if slug else "WebSite") in types, (url, types)
         assert not slug or "BreadcrumbList" in types, url
