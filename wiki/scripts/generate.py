@@ -1,4 +1,5 @@
 """Build the public wiki and crawler artifacts from canonical repository files."""
+import html
 import json
 import posixpath
 import re
@@ -105,6 +106,7 @@ def page(slug, title, description, body, path=None):
 
 def markdown(path, title, description):
     body = read(path).lstrip("\ufeff")
+    body = re.sub(r"\A---\r?\n.*?\r?\n---\r?\n", "", body, count=1, flags=re.S)
     body = re.sub(r"^# [^\n]+\n+", "", body, count=1)
     page(SOURCES[path], title, description, rewrite_links(body, path), path)
 
@@ -116,6 +118,10 @@ def raw(path, title, description, language):
 def catalog(directory, pattern):
     paths = sorted((ROOT / directory).glob(pattern))
     return "\n".join(f"- [{p.name}]({source(p.relative_to(ROOT).as_posix())})" for p in paths if p.is_file())
+
+
+def plain_markdown(value):
+    return re.sub(r"([\\`*_{}\[\]()#!|])", r"\\\1", html.escape(value, quote=False))
 
 
 def build():
@@ -232,9 +238,12 @@ def build():
         if members:
             body += "\n\n## Package contents\n\n" + code("\n".join(members))
         page(slug, title, description, body)
-        skills.append(f"- {link(slug, title)}: {description}")
+        skills.append(f"- {link(slug, title)}: {plain_markdown(description)}")
     page("skills", "Skill catalog", "Downloadable portable skill packages from the repository.",
          "Opt-in packages. Inspect before installation; skills do not grant permissions.\n\n" + "\n".join(skills))
+    for group in ("guides", "reference", "tools"):
+        entries = [(slug, title, description) for slug, (title, description, _) in PAGES.items() if slug.startswith(group + "/")]
+        page(group, GROUPS[group], f"Browse .ai {group}.", "\n".join(f"- {link(slug, title)}: {plain_markdown(description)}" for slug, title, description in entries))
 
 
 def emit():
@@ -249,19 +258,19 @@ def emit():
     for slug, (title, description, body) in PAGES.items():
         crumbs = [("Home", ""), (title, slug)] if slug else [("Home", "")]
         group = slug.split("/")[0]
-        if "/" in slug and group in {"templates", "skills"}:
+        if "/" in slug and group in GROUPS:
             crumbs.insert(1, (GROUPS[group], group))
         structured = {"@context": "https://schema.org", "@type": "TechArticle" if slug else "WebSite",
                       "name": title, "description": description, "url": url(slug),
                       "inLanguage": "en", "isAccessibleForFree": True}
         head = [{"tag": "script", "attrs": {"type": "application/ld+json"},
-                 "content": json.dumps(structured, ensure_ascii=True)}]
+                 "content": json.dumps(structured, ensure_ascii=True).replace("<", "\\u003c")}]
         if slug:
             breadcrumb = {"@context": "https://schema.org", "@type": "BreadcrumbList",
                           "itemListElement": [{"@type": "ListItem", "position": i, "name": name, "item": url(s)}
                                               for i, (name, s) in enumerate(crumbs, 1)]}
             head.append({"tag": "script", "attrs": {"type": "application/ld+json"},
-                         "content": json.dumps(breadcrumb, ensure_ascii=True)})
+                         "content": json.dumps(breadcrumb, ensure_ascii=True).replace("<", "\\u003c")})
         meta = {"title": title, "description": description, "head": head}
         frontmatter = "---\n" + "\n".join(f"{key}: {json.dumps(value, ensure_ascii=True)}" for key, value in meta.items()) + "\n---\n\n"
         trail = " / ".join(link(s, name) if s != slug else name for name, s in crumbs) + "\n\n" if slug else ""
