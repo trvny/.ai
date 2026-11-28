@@ -21,3 +21,9 @@ CLAUDE.local.md
 # Generated Astro wiki output
 /wiki/**/.astro/
 /wiki/**/dist/
+
+# Wiki source-derived content and indexes
+/wiki/src/content/docs/
+/wiki/public/sitemap.xml
+/wiki/public/llms.txt
+/wiki/public/llms-full.txt

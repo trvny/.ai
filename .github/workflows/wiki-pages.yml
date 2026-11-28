@@ -3,9 +3,6 @@ name: Wiki Pages
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
-    paths:
-      - "wiki/**"
-      - ".github/workflows/wiki-pages.yml"
   workflow_dispatch:
 
 permissions:
