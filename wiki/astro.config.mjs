@@ -9,7 +9,7 @@ export default defineConfig({
       title: '.ai Wiki',
       description: 'Portable AI core: instructions, profiles, overlays, tools, templates and skills.',
       logo: { src: './src/assets/mark.svg' },
-      favicon: '/.ai/favicon.svg',
+      favicon: '/favicon.svg',
       customCss: ['./src/styles/overprint.css'],
       head: [
         { tag: 'meta', attrs: { name: 'google-site-verification', content: 'xbXKq1w3ClpoMlxws6qobmZjpSmGVhi2xbrf7kwJV0s' } },
@@ -28,7 +28,7 @@ export default defineConfig({
         { label: 'Reference', items: [{ autogenerate: { directory: 'reference' } }] },
         { label: 'Tools', items: [{ autogenerate: { directory: 'tools' } }] },
         { label: 'Templates', items: [{ label: 'Overview', slug: 'templates' }, { autogenerate: { directory: 'templates' } }] },
-        { label: 'Skills', slug: 'skills' },
+        { label: 'Skills', items: [{ label: 'Catalog', slug: 'skills' }, { autogenerate: { directory: 'skills' } }] },
       ],
     }),
   ],
