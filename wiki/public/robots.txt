@@ -59,4 +59,4 @@ User-agent: *
 Content-Signal: ai-train=yes, search=yes, ai-input=yes
 Allow: /
 
-Sitemap: https://trvny.github.io/.ai/sitemap.xml
+Sitemap: https://ai.bartek.lol/sitemap.xml

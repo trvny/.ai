@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 WIKI = ROOT / "wiki"
 DOCS = WIKI / "src/content/docs"
 PUBLIC = WIKI / "public"
-BASE = "https://trvny.github.io/.ai/"
+BASE = "https://ai.bartek.lol/"
 REPO = "https://github.com/trvny/.ai"
 PAGES = {}
 
