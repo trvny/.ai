@@ -196,29 +196,45 @@ def build():
 
 [README]({source('README.md')}) · [License]({source('LICENSE')}) · [Citation]({source('CITATION')})
 """)
-    skills = []
+    archives = {}
     for archive in sorted((ROOT / "skills").iterdir()):
-        if not archive.is_file() or archive.suffix not in {".zip", ".skill"}:
-            continue
-        path = archive.relative_to(ROOT).as_posix()
-        download = REPO + "/raw/main/" + quote(path, safe="/")
+        if archive.is_file() and archive.suffix in {".zip", ".skill"}:
+            archives.setdefault(archive.stem, []).append(archive)
+    skills = []
+    for name, variants in archives.items():
+        slug = "skills/" + re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+        title = name.replace("_", " ").replace("-", " ").capitalize()
+        downloads = []
+        manifest = ""
         description = ""
         members = []
-        if zipfile.is_zipfile(archive):
-            with zipfile.ZipFile(archive) as z:
-                members = [n for n in z.namelist() if not n.endswith("/")]
-                manifests = sorted((n for n in members if n.split("/")[-1].lower() == "skill.md"), key=lambda n: (n.count("/"), n))
-                if manifests:
-                    info = z.getinfo(manifests[0])
-                    if info.file_size <= 256_000:
-                        manifest = z.read(info).decode("utf-8", errors="replace")
-                        match = re.search(r"(?m)^description:\s*(.+)$", manifest)
-                        if match:
-                            description = match.group(1).strip("\"' ")
-        skills.append(f"### {archive.name}\n\n{description + chr(10)*2 if description and description not in {'|', '>', '>-', '|-'} else ''}[Download]({download}) · [Source]({source(path)})" +
-                      (f" · {len(members)} files" if members else ""))
+        for archive in variants:
+            path = archive.relative_to(ROOT).as_posix()
+            download = REPO + "/raw/main/" + quote(path, safe="/")
+            downloads.append(f"- [{archive.name}]({download}) ([source]({source(path)}))")
+            if not manifest and zipfile.is_zipfile(archive):
+                with zipfile.ZipFile(archive) as z:
+                    members = [n for n in z.namelist() if not n.endswith("/")]
+                    manifests = sorted((n for n in members if n.split("/")[-1].lower() == "skill.md"), key=lambda n: (n.count("/"), n))
+                    if manifests:
+                        info = z.getinfo(manifests[0])
+                        if info.file_size <= 256_000:
+                            manifest = z.read(info).decode("utf-8", errors="replace")
+                            match = re.search(r"(?m)^description:[ \t]*(.+)$", manifest)
+                            if match:
+                                description = match.group(1).strip("\"' ")
+                                if description in {"|", ">", ">-", "|-"}:
+                                    description = ""
+        description = description or f"Portable {title.lower()} skill package."
+        body = "## Downloads\n\n" + "\n".join(downloads)
+        if manifest:
+            body += "\n\n## Skill instructions\n\n" + code(manifest, "markdown")
+        if members:
+            body += "\n\n## Package contents\n\n" + code("\n".join(members))
+        page(slug, title, description, body)
+        skills.append(f"- {link(slug, title)}: {description}")
     page("skills", "Skill catalog", "Downloadable portable skill packages from the repository.",
-         "Opt-in packages. Inspect before installation; skills do not grant permissions.\n\n" + "\n\n".join(skills))
+         "Opt-in packages. Inspect before installation; skills do not grant permissions.\n\n" + "\n".join(skills))
 
 
 def emit():

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "python scripts/generate.py && astro dev",
-    "build": "python scripts/generate.py && astro build",
+    "build": "python scripts/generate.py && astro build && python scripts/verify.py",
     "preview": "astro preview"
   },
   "dependencies": {
